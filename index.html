@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>D&D Combat Tracker — Project Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cinzel:wght@500;600;700&display=swap" rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        base: { 900: '#0b1120', 850: '#0f172a', 800: '#131c31', 700: '#1e293b', 600: '#283548', 500: '#334155', 400: '#475569' },
+                        surface: { 100: '#f8fafc', 200: '#e2e8f0', 300: '#cbd5e1', 400: '#94a3b8', 500: '#64748b' },
+                        violet: { 50: '#f5f3ff', 100: '#ede9fe', 200: '#ddd6fe', 300: '#c4b5fd', 400: '#a855f7', 500: '#7c3aed', 600: '#6d28d9', 700: '#5b21b6', 800: '#4c1d95' },
+                        gold: { 300: '#fcd34d', 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706' },
+                        emerald: { 400: '#34d399', 500: '#10b981', 600: '#059669' },
+                        sky: { 400: '#38bdf8', 500: '#0ea5e9' },
+                        amber: { 400: '#fbbf24', 500: '#f59e0b' },
+                        rose: { 400: '#fb7185', 500: '#f43f5e' },
+                        danger: { 400: '#f87171', 500: '#ef4444' }
+                    },
+                    fontFamily: {
+                        display: ['Cinzel', 'serif'],
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        :root {
+            --sidebar-width: 64px;
+            --sidebar-width-lg: 220px;
+        }
+        body { font-family: 'Inter', sans-serif; background: #0b1120; color: #e2e8f0; }
+        .sidebar-link.active { background: rgba(124, 58, 237, 0.2); color: #a855f7; border-left: 3px solid #7c3aed; }
+        .sidebar-link:hover:not(.active) { background: rgba(255,255,255,0.04); }
+        .phase-line { position: absolute; left: 18px; top: 40px; bottom: 0; width: 2px; background: linear-gradient(180deg, #7c3aed 0%, #1e293b 100%); }
+        .phase-dot { position: absolute; left: 12px; top: 12px; width: 14px; height: 14px; border-radius: 50%; border: 2px solid #7c3aed; background: #0f172a; z-index: 2; }
+        .phase-dot.completed { background: #10b981; border-color: #10b981; }
+        .phase-dot.in-progress { background: #7c3aed; border-color: #a855f7; }
+        .custom-check { appearance: none; -webkit-appearance: none; width: 18px; height: 18px; min-width: 18px; border: 2px solid #475569; border-radius: 4px; background: transparent; cursor: pointer; position: relative; transition: all 0.2s; }
+        .custom-check:checked { background: #7c3aed; border-color: #7c3aed; }
+        .custom-check:checked::after { content: '✓'; position: absolute; color: white; font-size: 12px; top: -1px; left: 2px; }
+        .custom-check:hover { border-color: #a855f7; }
+        .view-panel { display: none; animation: fadeIn 0.3s ease; }
+        .view-panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .card-glow { box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 4px 24px rgba(0,0,0,0.3); }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(124,58,237,0.15); }
+        .progress-bar-bg { background: rgba(255,255,255,0.06); }
+        .backlog-card:hover { border-color: rgba(124,58,237,0.3); }
+        .filter-btn.active { background: #7c3aed; color: white; }
+        .badge-sprint { background: rgba(124,58,237,0.2); color: #a855f7; }
+        @media (max-width: 767px) {
+            .sidebar-desktop { display: none !important; }
+            .bottom-bar { display: flex !important; }
+            .main-content { margin-left: 0 !important; padding-bottom: 80px; }
+        }
+        @media (min-width: 768px) {
+            .bottom-bar { display: none !important; }
+            .sidebar-desktop { display: flex !important; }
+            .main-content { margin-left: var(--sidebar-width) !important; }
+        }
+        @media (min-width: 1024px) {
+            .main-content { margin-left: var(--sidebar-width-lg) !important; }
+            .sidebar-desktop { width: var(--sidebar-width-lg) !important; }
+            .sidebar-desktop .nav-label { display: block !important; }
+            .sidebar-desktop .nav-icon-only { justify-content: flex-start !important; padding-left: 20px !important; gap: 12px !important; }
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    </style>
+</head>
+<body data-id="0" class="min-h-screen overflow-x-hidden">
+    <app-icon data-id="1" hidden data-icon="swords" data-palette="Dark"></app-icon>
+
+    <!-- Sidebar Desktop -->
+    <aside data-id="2" id="sidebar-main-a1b2" class="sidebar-desktop fixed top-0 left-0 h-full flex-col z-40" style="width: var(--sidebar-width); background: #0f172a; border-right: 1px solid rgba(255,255,255,0.06);">
+        <div data-id="3" class="p-3 lg:p-4 border-b border-white/5">
+            <div data-id="4" class="flex items-center gap-2">
+                <span data-id="5" class="text-xl">⚔️</span>
+                <span data-id="6" class="nav-label hidden text-sm font-display font-semibold text-violet-300 truncate">Project HQ</span>
+            </div>
+        </div>
+        <nav data-id="7" class="flex-1 flex flex-col gap-1 p-2 mt-2">
+            <button data-id="8" data-view="dashboard" class="sidebar-link nav-icon-only active flex items-center justify-center rounded-lg px-3 py-3 text-sm font-medium transition-all">
+                <i data-id="9" data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                <span data-id="10" class="nav-label hidden text-sm">Dashboard</span>
+            </button>
+            <button data-id="11" data-view="roadmap" class="sidebar-link nav-icon-only flex items-center justify-center rounded-lg px-3 py-3 text-sm font-medium text-surface-400 transition-all">
+                <i data-id="12" data-lucide="map" class="w-5 h-5"></i>
+                <span data-id="13" class="nav-label hidden text-sm">Roadmap</span>
+            </button>
+            <button data-id="14" data-view="backlog" class="sidebar-link nav-icon-only flex items-center justify-center rounded-lg px-3 py-3 text-sm font-medium text-surface-400 transition-all">
+                <i data-id="15" data-lucide="kanban" class="w-5 h-5"></i>
+                <span data-id="16" class="nav-label hidden text-sm">Backlog</span>
+            </button>
+        </nav>
+        <div data-id="17" class="p-3 border-t border-white/5">
+            <p data-id="18" id="last-saved-sidebar-c3d4" class="text-[10px] text-surface-500 text-center lg:text-left truncate"></p>
+        </div>
+    </aside>
+
+    <!-- Bottom Tab Bar Mobile -->
+    <nav data-id="19" id="bottom-bar-e5f6" class="bottom-bar hidden fixed bottom-0 left-0 right-0 z-50 items-center justify-around py-2 px-4" style="background: #0f172a; border-top: 1px solid rgba(255,255,255,0.08);">
+        <button data-id="20" data-view="dashboard" class="bottom-tab active flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-all">
+            <i data-id="21" data-lucide="layout-dashboard" class="w-5 h-5"></i>
+            <span data-id="22" class="text-[10px] font-medium">Dashboard</span>
+        </button>
+        <button data-id="23" data-view="roadmap" class="bottom-tab flex flex-col items-center gap-1 px-4 py-2 rounded-lg text-surface-400 transition-all">
+            <i data-id="24" data-lucide="map" class="w-5 h-5"></i>
+            <span data-id="25" class="text-[10px] font-medium">Roadmap</span>
+        </button>
+        <button data-id="26" data-view="backlog" class="bottom-tab flex flex-col items-center gap-1 px-4 py-2 rounded-lg text-surface-400 transition-all">
+            <i data-id="27" data-lucide="kanban" class="w-5 h-5"></i>
+            <span data-id="28" class="text-[10px] font-medium">Backlog</span>
+        </button>
+    </nav>
+
+    <!-- Main Content -->
+    <main data-id="29" class="main-content min-h-screen" style="margin-left: 0;">
+
+        <!-- Dashboard View -->
+        <section data-id="30" id="view-dashboard" class="view-panel active p-4 md:p-6 lg:p-8 max-w-6xl mx-auto">
+            <!-- Hero Banner -->
+            <div data-id="31" id="hero-banner-g7h8" class="relative overflow-hidden rounded-2xl p-6 md:p-8 mb-6" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #1a1040 100%); border: 1px solid rgba(124,58,237,0.15);">
+                <div data-id="32" class="absolute top-0 right-0 w-64 h-64 rounded-full opacity-10" style="background: radial-gradient(circle, #7c3aed 0%, transparent 70%); transform: translate(30%, -30%);"></div>
+                <div data-id="33" class="relative z-10">
+                    <h1 data-id="34" class="font-display text-2xl md:text-3xl lg:text-4xl font-bold text-surface-100 mb-2">⚔️ D&D Combat Tracker</h1>
+                    <p data-id="35" class="text-surface-400 text-sm md:text-base">Personal Project Tracker — managed by Cesar</p>
+                </div>
+            </div>
+
+            <!-- Stats Row -->
+            <div data-id="36" id="stats-row-i9j0" class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">
+                <div data-id="37" class="stat-card rounded-xl p-4 md:p-5 transition-all duration-300" style="background: #1e293b; border: 1px solid rgba(255,255,255,0.06);">
+                    <div data-id="38" class="flex items-center gap-2 mb-2">
+                        <i data-id="39" data-lucide="trending-up" class="w-4 h-4 text-violet-400"></i>
+                        <span data-id="40" class="text-xs font-medium text-surface-400 uppercase tracking-wide">Overall Progress</span>
+                    </div>
+                    <p data-id="41" id="stat-progress-k1l2" class="text-2xl md:text-3xl font-bold text-surface-100 tabular-nums">0%</p>
+                    <div data-id="42" class="mt-2 w-full h-2 rounded-full progress-bar-bg">
+                        <div data-id="43" id="stat-progress-bar-m3n4" class="h-full rounded-full transition-all duration-500" style="width: 0%; background: linear-gradient(90deg, #7c3aed, #a855f7);"></div>
+                    </div>
+                </div>
+                <div data-id="44" class="stat-card rounded-xl p-4 md:p-5 transition-all duration-300" style="background: #1e293b; border: 1px solid rgba(255,255,255,0.06);">
+                    <div data-id="45" class="flex items-center gap-2 mb-2">
+                        <i data-id="46" data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+                        <span data-id="47" class="text-xs font-medium text-surface-400 uppercase tracking-wide">Phases Done</span>
+                    </div>
+                    <p data-id="48" id="stat-phases-o5p6" class="text-2xl md:text-3xl font-bold text-surface-100 tabular-nums">0/5</p>
+                </div>
+                <div data-id="49" class="stat-card rounded-xl p-4 md:p-5 transition-all duration-300" style="background: #1e293b; border: 1px solid rgba(255,255,255,0.06);">
+                    <div data-id="50" class="flex items-center gap-2 mb-2">
+                        <i data-id="51" data-lucide="layers" class="w-4 h-4 text-gold-400"></i>
+                        <span data-id="52" class="text-xs font-medium text-surface-400 uppercase tracking-wide">Backlog Items</span>
+                    </div>
+                    <p data-id="53" id="stat-backlog-q7r8" class="text-2xl md:text-3xl font-bold text-surface-100 tabular-nums">0</p>
+                </div>
+                <div data-id="54" class="stat-card rounded-xl p-4 md:p-5 transition-all duration-300" style="background: #1e293b; border: 1px solid rgba(255,255,255,0.06);">
+                    <div data-id="55" class="flex items-center gap-2 mb-2">
+                        <i data-id="56" data-lucide="zap" class="w-4 h-4 text-amber-400"></i>
+                        <span data-id="57" class="text-xs font-medium text-surface-400 uppercase tracking-wide">Current Phase</span>
+                    </div>
+                    <p data-id="58" id="stat-current-s9t0" class="text-sm md:text-base font-semibold text-surface-100 leading-tight">—</p>
+                </div>
+            </div>
+
+            <!-- Phase Progress -->
+            <div data-id="59" id="phase-progress-u1v2" class="rounded-xl p-5 md:p-6 mb-6" style="background: #1e293b; border: 1px solid rgba(255,255,255,0.06);">
+                <h2 data-id="60" class="font-display text-lg font-semibold text-surface-100 mb-4">Phase Progress</h2>
+                <div data-id="61" id="phase-bars-w3x4" class="space-y-4"></div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div data-id="62" id="recent-activity-y5z6" class="rounded-xl p-5 md:p-6" style="background: #1e293b; border: 1px solid rgba(255,255,255,0.06);">
+                <h2 data-id="63" class="font-display text-lg font-semibold text-surface-100 mb-4">Recent Activity</h2>
+                <div data-id="64" id="activity-list-a7b8" class="space-y-3"></div>
+            </div>
+        </section>
+
+        <!-- Roadmap View -->
+        <section data-id="65" id="view-roadmap" class="view-panel p-4 md:p-6 lg:p-8 max-w-4xl mx-auto">
+            <div data-id="66" class="mb-6">
+                <h1 data-id="67" class="font-display text-xl md:text-2xl font-bold text-surface-100 mb-1">Roadmap</h1>
+                <p data-id="68" class="text-sm text-surface-400">Track your project phases from MVP to portfolio polish.</p>
+            </div>
+            <div data-id="69" id="roadmap-phases-c9d0" class="relative space-y-4 pl-10"></div>
+        </section>
+
+        <!-- Backlog View -->
+        <section data-id="70" id="view-backlog" class="view-panel p-4 md:p-6 lg:p-8 max-w-7xl mx-auto">
+            <div data-id="71" class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+                <div data-id="72">
+                    <h1 data-id="73" class="font-display text-xl md:text-2xl font-bold text-surface-100 mb-1">Backlog</h1>
+                    <p data-id="74" class="text-sm text-surface-400">Ideas and features waiting for their turn.</p>
+                </div>
+                <div data-id="75" id="backlog-filters-e1f2" class="flex gap-2">
+                    <button data-id="76" data-filter="all" class="filter-btn active text-xs font-medium px-3 py-1.5 rounded-lg transition-all">All</button>
+                    <button data-id="77" data-filter="sprint" class="filter-btn text-xs font-medium px-3 py-1.5 rounded-lg text-surface-400 transition-all" style="background: rgba(255,255,255,0.04);">In Sprint</button>
+                    <button data-id="78" data-filter="backlog" class="filter-btn text-xs font-medium px-3 py-1.5 rounded-lg text-surface-400 transition-all" style="background: rgba(255,255,255,0.04);">Backlog</button>
+                </div>
+            </div>
+            <div data-id="79" id="backlog-columns-g3h4" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4"></div>
+        </section>
+
+    </main>
+
+    <footer data-id="80" class="main-content py-6 text-center" style="margin-left: 0;">
+        <p data-id="81" class="text-xs text-surface-500">Made by Copilot</p>
+    </footer>
+
+    <script>
+    (function() {
+        // Guard for Lucide
+        if (typeof lucide !== "undefined" && typeof lucide.createIcons === "function") {
+            lucide.createIcons();
+        }
+
+        // ========== DATA ==========
+        const DEFAULT_DATA = {
+            roadmap: [
+                {
+                    id: 'phase1', name: 'Core MVP', phase: 1,
+                    accent: '#10b981',
+                    items: [
+                        { id: 'p1i1', text: 'Add/remove combatants', checked: true },
+                        { id: 'p1i2', text: 'Initiative sorting', checked: true },
+                        { id: 'p1i3', text: 'HP/AC tracking', checked: true },
+                        { id: 'p1i4', text: 'Death saves (conditional)', checked: true },
+                        { id: 'p1i5', text: 'Status toggling', checked: true },
+                        { id: 'p1i6', text: 'LocalStorage persistence', checked: true },
+                        { id: 'p1i7', text: 'Basic UI layout', checked: true }
+                    ]
+                },
+                {
+                    id: 'phase2', name: 'Gameplay Enhancements', phase: 2,
+                    accent: '#7c3aed',
+                    items: [
+                        { id: 'p2i1', text: 'Auto-reset death saves when HP > 0', checked: true },
+                        { id: 'p2i2', text: 'Auto-start death saves when HP hits 0', checked: true },
+                        { id: 'p2i3', text: '"Roll Death Save" button (d20 logic)', checked: false },
+                        { id: 'p2i4', text: 'Add "Heal" and "Damage" buttons', checked: false },
+                        { id: 'p2i5', text: 'Add "Stabilize" button', checked: false },
+                        { id: 'p2i6', text: 'Add conditions (Poisoned, Stunned, etc.)', checked: false },
+                        { id: 'p2i7', text: 'Add color coding (Players, Enemies, NPCs)', checked: false }
+                    ]
+                },
+                {
+                    id: 'phase3', name: 'UI/UX Improvements', phase: 3,
+                    accent: '#0ea5e9',
+                    items: [
+                        { id: 'p3i1', text: 'Icons (heart, shield, skull, etc.)', checked: false },
+                        { id: 'p3i2', text: 'Animations for HP changes', checked: false },
+                        { id: 'p3i3', text: 'Improved card layout', checked: false },
+                        { id: 'p3i4', text: 'Mobile-friendly responsive design', checked: false },
+                        { id: 'p3i5', text: 'Theme toggle (dark/light mode)', checked: false }
+                    ]
+                },
+                {
+                    id: 'phase4', name: 'DM Tools', phase: 4,
+                    accent: '#f59e0b',
+                    items: [
+                        { id: 'p4i1', text: 'Monster templates (SRD stat blocks)', checked: false },
+                        { id: 'p4i2', text: 'Encounter presets', checked: false },
+                        { id: 'p4i3', text: 'Export encounter to Markdown', checked: false },
+                        { id: 'p4i4', text: 'Import Markdown tables', checked: false },
+                        { id: 'p4i5', text: 'Notes sidebar', checked: false },
+                        { id: 'p4i6', text: 'Turn indicator (highlight active combatant)', checked: false }
+                    ]
+                },
+                {
+                    id: 'phase5', name: 'Portfolio Polish', phase: 5,
+                    accent: '#f43f5e',
+                    items: [
+                        { id: 'p5i1', text: 'Add screenshots', checked: false },
+                        { id: 'p5i2', text: 'Add demo video', checked: false },
+                        { id: 'p5i3', text: 'Deploy to GitHub Pages', checked: false },
+                        { id: 'p5i4', text: 'Add a polished project page on your website', checked: false }
+                    ]
+                }
+            ],
+            backlog: {
+                'Combat Features': [
+                    { id: 'b1i1', text: 'Temporary HP', sprint: false },
+                    { id: 'b1i2', text: 'Resistances/vulnerabilities', sprint: false },
+                    { id: 'b1i3', text: 'Recharge abilities', sprint: false },
+                    { id: 'b1i4', text: 'Spell slot tracking', sprint: false },
+                    { id: 'b1i5', text: 'Initiative reroll button', sprint: false }
+                ],
+                'UI Features': [
+                    { id: 'b2i1', text: 'Drag-and-drop initiative ordering', sprint: false },
+                    { id: 'b2i2', text: 'Collapsible combatant cards', sprint: false },
+                    { id: 'b2i3', text: 'Search/filter combatants', sprint: false },
+                    { id: 'b2i4', text: 'Group enemies into "packs"', sprint: false }
+                ],
+                'DM Tools': [
+                    { id: 'b3i1', text: 'Round counter', sprint: false },
+                    { id: 'b3i2', text: 'Auto-advance turn order', sprint: false },
+                    { id: 'b3i3', text: 'Encounter difficulty calculator', sprint: false },
+                    { id: 'b3i4', text: 'XP tracker', sprint: false },
+                    { id: 'b3i5', text: 'Loot generator', sprint: false }
+                ],
+                'Advanced': [
+                    { id: 'b4i1', text: 'Save/load multiple encounters', sprint: false },
+                    { id: 'b4i2', text: 'Export to JSON', sprint: false },
+                    { id: 'b4i3', text: 'Import from JSON', sprint: false },
+                    { id: 'b4i4', text: 'Sync with cloud storage', sprint: false },
+                    { id: 'b4i5', text: 'Multiplayer mode (players update their own stats)', sprint: false }
+                ]
+            },
+            activity: []
+        };
+
+        const STORAGE_KEY = 'dnd-tracker-project';
+
+        function loadData() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                try {
+                    const parsed = JSON.parse(stored);
+                    // Merge any missing defaults
+                    if (!parsed.activity) parsed.activity = [];
+                    return parsed;
+                } catch(e) { /* fall through */ }
+            }
+            const data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+            saveData(data);
+            return data;
+        }
+
+        function saveData(data) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            updateLastSaved();
+        }
+
+        function updateLastSaved() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+            const els = [document.getElementById('last-saved-sidebar-c3d4')];
+            els.forEach(el => { if (el) el.textContent = 'Saved ' + timeStr; });
+        }
+
+        let appData = loadData();
+
+        // ========== NAVIGATION ==========
+        let currentView = 'dashboard';
+
+        function switchView(view) {
+            currentView = view;
+            document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+            const target = document.getElementById('view-' + view);
+            if (target) target.classList.add('active');
+
+            document.querySelectorAll('.sidebar-link').forEach(l => {
+                l.classList.remove('active');
+                l.classList.add('text-surface-400');
+                if (l.dataset.view === view) {
+                    l.classList.add('active');
+                    l.classList.remove('text-surface-400');
+                }
+            });
+            document.querySelectorAll('.bottom-tab').forEach(t => {
+                t.classList.remove('active');
+                t.classList.add('text-surface-400');
+                if (t.dataset.view === view) {
+                    t.classList.add('active');
+                    t.classList.remove('text-surface-400');
+                }
+            });
+
+            if (view === 'dashboard') renderDashboard();
+            if (view === 'roadmap') renderRoadmap();
+            if (view === 'backlog') renderBacklog();
+        }
+
+        document.querySelectorAll('.sidebar-link').forEach(btn => {
+            btn.addEventListener('click', () => switchView(btn.dataset.view));
+        });
+        document.querySelectorAll('.bottom-tab').forEach(btn => {
+            btn.addEventListener('click', () => switchView(btn.dataset.view));
+        });
+
+        // ========== HELPERS ==========
+        function getPhaseStatus(phase) {
+            const total = phase.items.length;
+            const done = phase.items.filter(i => i.checked).length;
+            if (done === total) return 'completed';
+            if (done > 0) return 'in-progress';
+            return 'planned';
+        }
+
+        function getPhaseStatusLabel(status) {
+            if (status === 'completed') return { text: 'Completed', icon: '✅', bg: 'rgba(16,185,129,0.15)', color: '#10b981' };
+            if (status === 'in-progress') return { text: 'In Progress', icon: '🔄', bg: 'rgba(124,58,237,0.15)', color: '#a855f7' };
+            return { text: 'Planned', icon: '📋', bg: 'rgba(255,255,255,0.06)', color: '#94a3b8' };
+        }
+
+        function logActivity(itemText, checked) {
+            appData.activity.unshift({
+                item: itemText,
+                checked: checked,
+                timestamp: new Date().toISOString()
+            });
+            if (appData.activity.length > 20) appData.activity = appData.activity.slice(0, 20);
+        }
+
+        function timeAgo(isoStr) {
+            const now = new Date();
+            const then = new Date(isoStr);
+            const diff = Math.floor((now - then) / 1000);
+            if (diff < 60) return 'just now';
+            if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+            if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+            return Math.floor(diff / 86400) + 'd ago';
+        }
+
+        // ========== DASHBOARD ==========
+        function renderDashboard() {
+            const allItems = appData.roadmap.flatMap(p => p.items);
+            const totalItems = allItems.length;
+            const doneItems = allItems.filter(i => i.checked).length;
+            const pct = totalItems > 0 ? Math.round((doneItems / totalItems) * 100) : 0;
+
+            document.getElementById('stat-progress-k1l2').textContent = pct + '%';
+            document.getElementById('stat-progress-bar-m3n4').style.width = pct + '%';
+
+            const phasesComplete = appData.roadmap.filter(p => getPhaseStatus(p) === 'completed').length;
+            document.getElementById('stat-phases-o5p6').textContent = phasesComplete + '/5';
+
+            const backlogCount = Object.values(appData.backlog).flat().length;
+            document.getElementById('stat-backlog-q7r8').textContent = backlogCount;
+
+            const inProgressPhase = appData.roadmap.find(p => getPhaseStatus(p) === 'in-progress');
+            document.getElementById('stat-current-s9t0').textContent = inProgressPhase ? 'Phase ' + inProgressPhase.phase + ' — ' + inProgressPhase.name : 'All planned';
+
+            // Phase bars
+            const barsContainer = document.getElementById('phase-bars-w3x4');
+            barsContainer.innerHTML = '';
+            appData.roadmap.forEach(phase => {
+                const done = phase.items.filter(i => i.checked).length;
+                const total = phase.items.length;
+                const barPct = total > 0 ? Math.round((done / total) * 100) : 0;
+                const status = getPhaseStatus(phase);
+                const barColor = status === 'completed' ? '#10b981' : (status === 'in-progress' ? phase.accent : '#334155');
+
+                const row = document.createElement('div');
+                row.className = 'flex flex-col sm:flex-row sm:items-center gap-2';
+                row.innerHTML = `
+                    <div class="flex items-center gap-2 sm:w-48 shrink-0">
+                        <span class="w-2 h-2 rounded-full shrink-0" style="background: ${phase.accent}"></span>
+                        <span class="text-sm font-medium text-surface-200 truncate">Phase ${phase.phase}: ${phase.name}</span>
+                    </div>
+                    <div class="flex-1 flex items-center gap-3">
+                        <div class="flex-1 h-2.5 rounded-full progress-bar-bg">
+                            <div class="h-full rounded-full transition-all duration-700" style="width: ${barPct}%; background: ${barColor};"></div>
+                        </div>
+                        <span class="text-xs text-surface-400 tabular-nums w-12 text-right">${done}/${total}</span>
+                    </div>
+                `;
+                barsContainer.appendChild(row);
+            });
+
+            // Recent Activity
+            const activityContainer = document.getElementById('activity-list-a7b8');
+            activityContainer.innerHTML = '';
+            if (appData.activity.length === 0) {
+                activityContainer.innerHTML = '<p class="text-sm text-surface-500 italic">No activity yet. Start checking off items to see your progress here!</p>';
+            } else {
+                appData.activity.slice(0, 5).forEach(act => {
+                    const el = document.createElement('div');
+                    el.className = 'flex items-start gap-3 py-2';
+                    el.innerHTML = `
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5" style="background: ${act.checked ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)'}">
+                            <i data-lucide="${act.checked ? 'check' : 'x'}" class="w-4 h-4" style="color: ${act.checked ? '#10b981' : '#ef4444'}"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm text-surface-200 truncate">${act.checked ? 'Completed' : 'Unchecked'}: <span class="text-surface-100 font-medium">${act.item}</span></p>
+                            <p class="text-xs text-surface-500">${timeAgo(act.timestamp)}</p>
+                        </div>
+                    `;
+                    activityContainer.appendChild(el);
+                });
+                refreshIcons();
+            }
+        }
+
+        // ========== ROADMAP ==========
+        function renderRoadmap() {
+            const container = document.getElementById('roadmap-phases-c9d0');
+            container.innerHTML = '';
+
+            appData.roadmap.forEach((phase, idx) => {
+                const status = getPhaseStatus(phase);
+                const statusInfo = getPhaseStatusLabel(status);
+                const done = phase.items.filter(i => i.checked).length;
+                const total = phase.items.length;
+                const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+                const card = document.createElement('div');
+                card.className = 'relative';
+
+                // Timeline decorations
+                const dotClass = status === 'completed' ? 'completed' : (status === 'in-progress' ? 'in-progress' : '');
+                const lineHtml = idx < appData.roadmap.length - 1 ? '<div class="phase-line"></div>' : '';
+
+                card.innerHTML = `
+                    <div class="phase-dot ${dotClass}"></div>
+                    ${lineHtml}
+                    <div class="rounded-xl p-5 md:p-6 transition-all" style="background: #1e293b; border: 1px solid rgba(255,255,255,0.06);">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold" style="background: ${phase.accent}20; color: ${phase.accent};">
+                                    ${phase.phase}
+                                </span>
+                                <h3 class="font-display text-base md:text-lg font-semibold text-surface-100">${phase.name}</h3>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs tabular-nums text-surface-400">${done}/${total}</span>
+                                <span class="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-lg" style="background: ${statusInfo.bg}; color: ${statusInfo.color};">
+                                    ${statusInfo.icon} ${statusInfo.text}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="w-full h-1.5 rounded-full progress-bar-bg mb-4">
+                            <div class="h-full rounded-full transition-all duration-500" style="width: ${pct}%; background: ${phase.accent};"></div>
+                        </div>
+                        <div class="space-y-2" id="roadmap-items-${phase.id}">
+                            ${phase.items.map(item => `
+                                <label class="flex items-center gap-3 py-1.5 px-2 rounded-lg cursor-pointer hover:bg-white/[0.02] transition-all group" data-roadmap-item="${item.id}">
+                                    <input type="checkbox" class="custom-check" ${item.checked ? 'checked' : ''} data-item-id="${item.id}" data-phase-id="${phase.id}" />
+                                    <span class="text-sm ${item.checked ? 'line-through text-surface-500' : 'text-surface-200 group-hover:text-surface-100'} transition-all">${item.text}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            // Attach roadmap checkbox handlers
+            container.querySelectorAll('input[data-item-id]').forEach(cb => {
+                cb.addEventListener('change', function() {
+                    const phaseId = this.dataset.phaseId;
+                    const itemId = this.dataset.itemId;
+                    const phase = appData.roadmap.find(p => p.id === phaseId);
+                    if (phase) {
+                        const item = phase.items.find(i => i.id === itemId);
+                        if (item) {
+                            item.checked = this.checked;
+                            logActivity(item.text, this.checked);
+                            saveData(appData);
+                            renderRoadmap();
+                        }
+                    }
+                });
+            });
+        }
+
+        // ========== BACKLOG ==========
+        let backlogFilter = 'all';
+
+        function renderBacklog() {
+            const container = document.getElementById('backlog-columns-g3h4');
+            container.innerHTML = '';
+
+            const categoryIcons = {
+                'Combat Features': 'swords',
+                'UI Features': 'palette',
+                'DM Tools': 'crown',
+                'Advanced': 'rocket'
+            };
+            const categoryColors = {
+                'Combat Features': '#f43f5e',
+                'UI Features': '#0ea5e9',
+                'DM Tools': '#f59e0b',
+                'Advanced': '#a855f7'
+            };
+
+            Object.entries(appData.backlog).forEach(([category, items]) => {
+                const filteredItems = items.filter(item => {
+                    if (backlogFilter === 'sprint') return item.sprint;
+                    if (backlogFilter === 'backlog') return !item.sprint;
+                    return true;
+                });
+
+                const sprintCount = items.filter(i => i.sprint).length;
+                const color = categoryColors[category] || '#7c3aed';
+                const iconName = categoryIcons[category] || 'box';
+
+                const col = document.createElement('div');
+                col.className = 'backlog-card rounded-xl p-4 transition-all';
+                col.style.cssText = 'background: #1e293b; border: 1px solid rgba(255,255,255,0.06);';
+                col.innerHTML = `
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="${iconName}" class="w-4 h-4" style="color: ${color}"></i>
+                            <h3 class="text-sm font-semibold text-surface-100">${category}</h3>
+                        </div>
+                        <span class="text-xs font-medium px-2 py-0.5 rounded-md tabular-nums" style="background: ${color}20; color: ${color}">${items.length}</span>
+                    </div>
+                    <div class="space-y-2 mb-3" id="backlog-cat-${category.replace(/\s+/g, '-').toLowerCase()}">
+                        ${filteredItems.map(item => `
+                            <div class="flex items-start gap-2.5 py-2 px-2.5 rounded-lg transition-all ${item.sprint ? 'bg-violet-500/[0.08]' : 'hover:bg-white/[0.02]'}" data-backlog-item="${item.id}">
+                                <input type="checkbox" class="custom-check mt-0.5" ${item.sprint ? 'checked' : ''} data-backlog-id="${item.id}" data-backlog-cat="${category}" />
+                                <div class="flex-1 min-w-0">
+                                    <span class="text-sm ${item.sprint ? 'text-violet-300' : 'text-surface-300'}">${item.text}</span>
+                                    ${item.sprint ? '<span class="inline-block ml-2 text-[10px] font-medium px-1.5 py-0.5 rounded badge-sprint">In Sprint</span>' : ''}
+                                </div>
+                            </div>
+                        `).join('')}
+                        ${filteredItems.length === 0 ? '<p class="text-xs text-surface-500 italic py-2">No items match filter</p>' : ''}
+                    </div>
+                    <button class="add-backlog-btn w-full flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium text-surface-400 hover:text-violet-400 hover:bg-violet-500/[0.08] transition-all" data-add-cat="${category}">
+                        <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                        Add Item
+                    </button>
+                    <div class="add-form hidden mt-2" data-form-cat="${category}">
+                        <div class="flex gap-2">
+                            <input type="text" placeholder="New item..." class="flex-1 text-sm bg-base-800 text-surface-200 rounded-lg px-3 py-2 border border-white/10 focus:border-violet-500 focus:outline-none placeholder-surface-500" data-input-cat="${category}" />
+                            <button class="save-backlog-btn px-3 py-2 rounded-lg text-xs font-medium bg-violet-600 text-white hover:bg-violet-500 transition-all" data-save-cat="${category}">Add</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(col);
+            });
+
+            // Attach backlog checkbox handlers
+            container.querySelectorAll('input[data-backlog-id]').forEach(cb => {
+                cb.addEventListener('change', function() {
+                    const cat = this.dataset.backlogCat;
+                    const id = this.dataset.backlogId;
+                    const items = appData.backlog[cat];
+                    if (items) {
+                        const item = items.find(i => i.id === id);
+                        if (item) {
+                            item.sprint = this.checked;
+                            logActivity(item.text, this.checked);
+                            saveData(appData);
+                            renderBacklog();
+                        }
+                    }
+                });
+            });
+
+            // Add item buttons
+            container.querySelectorAll('.add-backlog-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const cat = this.dataset.addCat;
+                    const form = container.querySelector(`[data-form-cat="${cat}"]`);
+                    if (form) {
+                        form.classList.toggle('hidden');
+                        if (!form.classList.contains('hidden')) {
+                            form.querySelector('input').focus();
+                        }
+                    }
+                });
+            });
+
+            // Save new items
+            container.querySelectorAll('.save-backlog-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const cat = this.dataset.saveCat;
+                    const input = container.querySelector(`[data-input-cat="${cat}"]`);
+                    if (input && input.value.trim()) {
+                        const newId = 'b_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
+                        appData.backlog[cat].push({ id: newId, text: input.value.trim(), sprint: false });
+                        saveData(appData);
+                        renderBacklog();
+                    }
+                });
+            });
+
+            // Enter key on inputs
+            container.querySelectorAll('input[data-input-cat]').forEach(input => {
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        const cat = this.dataset.inputCat;
+                        const saveBtn = container.querySelector(`[data-save-cat="${cat}"]`);
+                        if (saveBtn) saveBtn.click();
+                    }
+                });
+            });
+
+            refreshIcons();
+        }
+
+        // Backlog filter handlers
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                backlogFilter = this.dataset.filter;
+                document.querySelectorAll('.filter-btn').forEach(b => {
+                    b.classList.remove('active');
+                    b.style.background = 'rgba(255,255,255,0.04)';
+                    b.classList.add('text-surface-400');
+                });
+                this.classList.add('active');
+                this.style.background = '';
+                this.classList.remove('text-surface-400');
+                renderBacklog();
+            });
+        });
+
+        // ========== ICON REFRESH ==========
+        function refreshIcons() {
+            if (typeof lucide !== "undefined" && typeof lucide.createIcons === "function") {
+                lucide.createIcons();
+            }
+        }
+
+        // ========== INIT ==========
+        renderDashboard();
+        updateLastSaved();
+    })();
+    </script>
+</body>
+</html>
