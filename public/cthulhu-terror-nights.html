@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cthulhu's Terror Nights — Act I Adventure Book</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            parchment: '#f5f0e8',
+            parchDark: '#e8dfd0',
+            primary: '#1a1008',
+            header: '#2b1a06',
+            gold: '#d4b483',
+            goldLight: '#e6d4b0',
+            goldDark: '#b8945a',
+            panel: '#1b1207',
+            panelLight: '#2a1e10',
+            danger: '#8b1a1a',
+            dangerLight: '#a52a2a',
+            cover: '#0d0a05',
+            blueHint: '#1a2a3a',
+            greenHint: '#1a2a1a',
+          }
+        }
+      }
+    };
+  </script>
+  <script src="https://unpkg.com/lucide@latest" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --parchment: #f5f0e8;
+      --parchment-dark: #e8dfd0;
+      --primary: #1a1008;
+      --header: #2b1a06;
+      --gold: #d4b483;
+      --gold-light: #e6d4b0;
+      --gold-dark: #b8945a;
+      --panel: #1b1207;
+      --panel-light: #2a1e10;
+      --danger: #8b1a1a;
+      --cover: #0d0a05;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'EB Garamond', Georgia, serif;
+      background: var(--parchment);
+      color: var(--primary);
+      margin: 0;
+      line-height: 1.6;
+      font-size: 17px;
+    }
+    h1, h2, h3, h4, h5 {
+      font-family: 'Cinzel', serif;
+      color: var(--header);
+      line-height: 1.25;
+    }
+    .cinzel { font-family: 'Cinzel', serif; }
+    .garamond { font-family: 'EB Garamond', serif; }
+
+    /* Sidebar */
+    #sidebar-v7x1 {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      width: 260px; background: var(--panel);
+      overflow-y: auto; z-index: 40;
+      border-right: 2px solid var(--gold-dark);
+      transition: transform 0.3s ease;
+    }
+    #sidebar-v7x1::-webkit-scrollbar { width: 6px; }
+    #sidebar-v7x1::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 3px; }
+    #sidebar-v7x1::-webkit-scrollbar-track { background: var(--panel); }
+
+    .sidebar-link {
+      display: block; padding: 6px 16px; color: var(--gold);
+      font-family: 'EB Garamond', serif; font-size: 14px;
+      text-decoration: none; transition: all 0.2s;
+      border-left: 3px solid transparent;
+    }
+    .sidebar-link:hover { background: rgba(212,180,131,0.1); color: #fff; }
+    .sidebar-link.active { border-left-color: var(--gold); background: rgba(212,180,131,0.12); color: #fff; font-weight: 600; }
+    .sidebar-link.sub { padding-left: 32px; font-size: 13px; color: var(--gold-dark); }
+    .sidebar-link.sub:hover { color: var(--gold-light); }
+    .sidebar-link.sub.active { color: #fff; }
+
+    .sidebar-section-title {
+      font-family: 'Cinzel', serif; font-size: 11px; color: var(--gold-dark);
+      text-transform: uppercase; letter-spacing: 2px;
+      padding: 12px 16px 4px; margin: 0;
+    }
+
+    #main-content-a2b3 {
+      margin-left: 260px; min-height: 100vh;
+    }
+
+    /* Callout boxes */
+    .callout-warning {
+      background: rgba(139,26,26,0.08); border-left: 4px solid var(--danger);
+      padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 16px 0;
+    }
+    .callout-dark {
+      background: var(--panel); color: var(--gold); padding: 20px 24px;
+      border-radius: 8px; margin: 16px 0; border: 1px solid rgba(212,180,131,0.2);
+    }
+    .callout-parchment {
+      background: var(--parchment-dark); padding: 20px 24px;
+      border: 1px solid rgba(212,180,131,0.4); border-radius: 8px; margin: 16px 0;
+    }
+    .callout-gold {
+      background: rgba(212,180,131,0.1); border-left: 4px solid var(--gold);
+      padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 16px 0;
+    }
+    .callout-blue {
+      background: rgba(26,42,58,0.08); border-left: 4px solid #4a6a8a;
+      padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 16px 0;
+      font-family: 'Courier New', monospace; font-size: 14px;
+    }
+    .callout-faction {
+      border-left: 4px solid var(--gold-dark); background: rgba(27,18,7,0.04);
+      padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 16px 0;
+    }
+
+    /* Read-aloud */
+    .read-aloud {
+      background: var(--panel); color: var(--gold-light);
+      padding: 24px 28px; border-radius: 8px; margin: 16px 0;
+      font-style: italic; font-size: 16px; line-height: 1.7;
+      border: 1px solid rgba(212,180,131,0.15);
+      position: relative;
+    }
+    .read-aloud::before {
+      content: '\201C'; font-size: 48px; color: var(--gold-dark);
+      position: absolute; top: 8px; left: 10px; font-family: 'Cinzel', serif;
+      opacity: 0.5;
+    }
+
+    /* NPC block */
+    .npc-block {
+      background: #fff; border: 1px solid rgba(212,180,131,0.3);
+      border-radius: 8px; margin: 20px 0; overflow: hidden;
+      box-shadow: 0 2px 8px rgba(27,18,7,0.08);
+    }
+    .npc-header {
+      background: var(--panel); color: var(--gold); padding: 14px 20px;
+      font-family: 'Cinzel', serif;
+    }
+    .npc-body { padding: 20px; }
+
+    /* Monster stat block */
+    .stat-block {
+      background: #faf6ee; border: 2px solid var(--gold-dark);
+      border-radius: 0; margin: 20px 0; overflow: hidden;
+      box-shadow: 0 2px 12px rgba(27,18,7,0.12);
+    }
+    .stat-block-header {
+      background: var(--danger); color: var(--gold-light); padding: 12px 20px;
+      font-family: 'Cinzel', serif;
+    }
+    .stat-block-body { padding: 20px; }
+    .stat-block-divider {
+      height: 2px; background: linear-gradient(to right, transparent, var(--gold-dark), transparent);
+      margin: 12px 0;
+    }
+    .stat-row { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; text-align: center; margin: 8px 0; }
+    .stat-item { font-family: 'Cinzel', serif; font-size: 13px; }
+    .stat-val { font-weight: 700; font-size: 16px; display: block; }
+
+    /* Handout */
+    .handout {
+      background: #faf5e4; border: 2px solid var(--gold-dark);
+      padding: 28px 32px; border-radius: 4px; margin: 20px 0;
+      font-style: italic; line-height: 1.8;
+      box-shadow: 2px 3px 12px rgba(27,18,7,0.15);
+      position: relative;
+    }
+    .handout::after {
+      content: ''; position: absolute; inset: 4px;
+      border: 1px solid rgba(212,180,131,0.3); pointer-events: none;
+    }
+
+    /* Tables */
+    .campaign-table {
+      width: 100%; border-collapse: collapse; margin: 16px 0;
+      font-size: 15px;
+    }
+    .campaign-table th {
+      background: var(--panel); color: var(--gold);
+      font-family: 'Cinzel', serif; font-size: 12px;
+      text-transform: uppercase; letter-spacing: 1px;
+      padding: 10px 14px; text-align: left;
+    }
+    .campaign-table td {
+      padding: 10px 14px; border-bottom: 1px solid rgba(212,180,131,0.2);
+    }
+    .campaign-table tr:nth-child(even) td { background: rgba(212,180,131,0.05); }
+
+    .quest-main td { background: rgba(139,26,26,0.04) !important; border-left: 3px solid var(--danger); }
+    .quest-side td { background: rgba(26,58,26,0.04) !important; border-left: 3px solid #3a6a3a; }
+    .quest-char td { background: rgba(26,42,78,0.04) !important; border-left: 3px solid #3a4a7a; }
+    .quest-explore td { background: rgba(212,180,131,0.06) !important; border-left: 3px solid var(--gold-dark); }
+
+    /* Part banner */
+    .part-banner {
+      background: var(--panel); color: var(--gold); padding: 24px 28px;
+      border-radius: 8px; margin: 32px 0 20px; cursor: pointer;
+      border: 1px solid rgba(212,180,131,0.15);
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background 0.2s;
+    }
+    .part-banner:hover { background: var(--panel-light); }
+
+    /* Ornamental divider */
+    .ornament {
+      text-align: center; color: var(--gold-dark);
+      font-family: 'Cinzel', serif; font-size: 18px;
+      letter-spacing: 8px; margin: 16px 0;
+    }
+
+    /* Search highlight */
+    .search-highlight { background: rgba(212,180,131,0.5); padding: 1px 2px; border-radius: 2px; }
+
+    /* Scroll to top */
+    #scroll-top-btn-k3m2 {
+      position: fixed; bottom: 24px; right: 24px;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--panel); color: var(--gold);
+      border: 1px solid var(--gold-dark);
+      display: none; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 50; transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    #scroll-top-btn-k3m2:hover { background: var(--panel-light); transform: scale(1.1); }
+
+    /* Print */
+    @media print {
+      #sidebar-v7x1, #mobile-menu-btn-z4f1, #scroll-top-btn-k3m2, #print-btn-q8w2, #dark-toggle-r5t9 { display: none !important; }
+      #main-content-a2b3 { margin-left: 0 !important; }
+      .part-banner { break-before: page; }
+      body { background: #fff; font-size: 12pt; }
+    }
+
+    /* Dark mode */
+    body.dark-mode {
+      background: #0d0a05; color: #d4c8b0;
+    }
+    body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4, body.dark-mode h5 {
+      color: var(--gold);
+    }
+    body.dark-mode .callout-warning { background: rgba(139,26,26,0.15); }
+    body.dark-mode .callout-parchment { background: rgba(42,30,16,0.6); border-color: rgba(212,180,131,0.2); }
+    body.dark-mode .callout-gold { background: rgba(212,180,131,0.06); }
+    body.dark-mode .callout-faction { background: rgba(42,30,16,0.3); }
+    body.dark-mode .callout-blue { background: rgba(26,42,58,0.3); }
+    body.dark-mode .npc-block { background: #1b1207; border-color: rgba(212,180,131,0.15); }
+    body.dark-mode .npc-body { color: #c8b89a; }
+    body.dark-mode .stat-block { background: #1b1207; border-color: var(--gold-dark); }
+    body.dark-mode .stat-block-body { color: #c8b89a; }
+    body.dark-mode .handout { background: #1b1207; color: #c8b89a; }
+    body.dark-mode .campaign-table td { color: #c8b89a; border-bottom-color: rgba(212,180,131,0.1); }
+    body.dark-mode .campaign-table tr:nth-child(even) td { background: rgba(212,180,131,0.03); }
+    body.dark-mode .quest-main td { background: rgba(139,26,26,0.1) !important; }
+    body.dark-mode .quest-side td { background: rgba(26,58,26,0.1) !important; }
+    body.dark-mode .quest-char td { background: rgba(26,42,78,0.1) !important; }
+    body.dark-mode .quest-explore td { background: rgba(212,180,131,0.04) !important; }
+    body.dark-mode #main-content-a2b3 section { border-color: rgba(212,180,131,0.08); }
+
+    /* Mobile */
+    @media (max-width: 767px) {
+      #sidebar-v7x1 { transform: translateX(-100%); width: 280px; }
+      #sidebar-v7x1.open { transform: translateX(0); }
+      #main-content-a2b3 { margin-left: 0; }
+      .read-aloud { padding: 20px; padding-left: 24px; }
+      .handout { padding: 20px; }
+    }
+
+    /* Collapsible content */
+    .part-content { overflow: hidden; transition: max-height 0.4s ease; }
+    .part-content.collapsed { max-height: 0 !important; }
+
+    /* Overlay for mobile sidebar */
+    #sidebar-overlay-x9k4 {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6); z-index: 35;
+    }
+    #sidebar-overlay-x9k4.show { display: block; }
+
+    /* Prompt box */
+    .prompt-box {
+      background: rgba(26,42,58,0.06); border: 1px solid rgba(74,106,138,0.2);
+      border-radius: 8px; padding: 20px; margin: 16px 0;
+    }
+    body.dark-mode .prompt-box { background: rgba(26,42,58,0.2); border-color: rgba(74,106,138,0.3); }
+    .prompt-box pre {
+      font-family: 'Courier New', monospace; font-size: 13px;
+      white-space: pre-wrap; word-wrap: break-word; margin: 8px 0 0;
+      color: var(--primary); line-height: 1.5;
+    }
+    body.dark-mode .prompt-box pre { color: #c8b89a; }
+  </style>
+</head>
+<body data-id="0">
+  <app-icon data-id="1" hidden data-icon="skull" data-palette="Dark"></app-icon>
+
+  <!-- Sidebar Overlay (mobile) -->
+  <div data-id="2" id="sidebar-overlay-x9k4"></div>
+
+  <!-- Sidebar Navigation -->
+  <nav data-id="3" id="sidebar-v7x1" aria-label="Table of Contents">
+    <div data-id="4" class="p-4 pb-2 flex items-center justify-between">
+      <h2 data-id="5" class="cinzel text-gold text-xs tracking-widest uppercase m-0">Contents</h2>
+      <button data-id="6" id="sidebar-close-btn-m1n3" class="md:hidden text-gold p-1"><i data-id="7" data-lucide="x" class="w-5 h-5"></i></button>
+    </div>
+
+    <!-- Search -->
+    <div data-id="8" class="px-4 pb-3">
+      <div data-id="9" class="relative">
+        <input data-id="10" id="search-input-p5q7" type="text" placeholder="Search book..." class="w-full bg-panel border border-gold/30 text-gold text-sm rounded px-3 py-2 pr-8 focus:outline-none focus:border-gold placeholder-gold/40" style="font-family:'EB Garamond',serif;">
+        <i data-id="11" data-lucide="search" class="w-4 h-4 absolute right-2 top-2.5 text-gold/40"></i>
+      </div>
+    </div>
+
+    <a data-id="12" href="#cover" class="sidebar-link active" data-nav="cover">Cover</a>
+    <a data-id="13" href="#preface" class="sidebar-link" data-nav="preface">Preface &amp; Safety</a>
+
+    <p data-id="14" class="sidebar-section-title">Part I: Lore Codex</p>
+    <a data-id="15" href="#mythos" class="sidebar-link sub" data-nav="mythos">The Mythos</a>
+    <a data-id="16" href="#overview" class="sidebar-link sub" data-nav="overview">Campaign Overview</a>
+    <a data-id="17" href="#factions" class="sidebar-link sub" data-nav="factions">Factions</a>
+    <a data-id="18" href="#locations" class="sidebar-link sub" data-nav="locations">Key Locations</a>
+
+    <p data-id="19" class="sidebar-section-title">Part II: Player Options</p>
+    <a data-id="20" href="#passions" class="sidebar-link sub" data-nav="passions">Passions</a>
+    <a data-id="21" href="#insights" class="sidebar-link sub" data-nav="insights">Dreadful Insights</a>
+    <a data-id="22" href="#feats" class="sidebar-link sub" data-nav="feats">Backgrounds &amp; Feats</a>
+
+    <p data-id="23" class="sidebar-section-title">Part III: The Adventure</p>
+    <a data-id="24" href="#session1" class="sidebar-link sub" data-nav="session1">Session 1: A Boat and the Old Man's Tales</a>
+
+    <a data-id="25" href="#npcs" class="sidebar-link" data-nav="npcs">Part IV: NPC Database</a>
+    <a data-id="26" href="#monsters" class="sidebar-link" data-nav="monsters">Part V: Monster Index</a>
+    <a data-id="27" href="#skill-challenges" class="sidebar-link" data-nav="skill-challenges">Part VI: Skill Challenges</a>
+    <a data-id="28" href="#quests" class="sidebar-link" data-nav="quests">Part VII: Quest Tracker</a>
+    <a data-id="29" href="#cheat-sheets" class="sidebar-link" data-nav="cheat-sheets">Part VIII: DM Cheat Sheets</a>
+    <a data-id="30" href="#handouts" class="sidebar-link" data-nav="handouts">Part IX: Player Handouts</a>
+    <a data-id="31" href="#prompts" class="sidebar-link" data-nav="prompts">Part X: DM Prompt Templates</a>
+
+    <div data-id="32" class="px-4 py-4 mt-4 border-t border-gold/10">
+      <button data-id="33" id="print-btn-q8w2" class="flex items-center gap-2 text-gold/60 hover:text-gold text-sm cinzel cursor-pointer bg-transparent border-none" style="font-size:12px;">
+        <i data-id="34" data-lucide="printer" class="w-4 h-4"></i> Print Book
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Header -->
+  <div data-id="35" id="mobile-header-d6e8" class="md:hidden fixed top-0 left-0 right-0 bg-panel z-30 flex items-center justify-between px-4 py-3 border-b border-gold/20">
+    <button data-id="36" id="mobile-menu-btn-z4f1" class="text-gold p-1">
+      <i data-id="37" data-lucide="menu" class="w-6 h-6"></i>
+    </button>
+    <span data-id="38" class="cinzel text-gold text-xs tracking-widest uppercase">Cthulhu's Terror Nights</span>
+    <button data-id="39" id="dark-toggle-mobile-j2k5" class="text-gold p-1">
+      <i data-id="40" data-lucide="moon" class="w-5 h-5"></i>
+    </button>
+  </div>
+
+  <!-- Main Content -->
+  <div data-id="41" id="main-content-a2b3">
+
+    <!-- Floating controls (desktop) -->
+    <div data-id="42" class="hidden md:flex fixed top-4 right-4 z-30 gap-2">
+      <button data-id="43" id="dark-toggle-r5t9" class="bg-panel text-gold border border-gold/30 rounded-full w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-panelLight transition-colors" title="Toggle Dark/Light Mode">
+        <i data-id="44" data-lucide="moon" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <!-- ===== COVER ===== -->
+    <section data-id="45" id="cover" class="bg-cover text-center py-20 md:py-32 px-6">
+      <p data-id="46" class="cinzel text-gold/70 text-xs md:text-sm tracking-[0.3em] uppercase mb-4">A Mythos Horror Mystery Campaign</p>
+      <h1 data-id="47" class="cinzel text-4xl md:text-6xl lg:text-7xl font-bold mb-2 leading-tight">
+        <span data-id="48" class="text-danger">CTHULHU'S</span> <span data-id="49" class="text-gold">TERROR NIGHTS</span>
+      </h1>
+      <p data-id="50" class="cinzel text-gold/80 text-lg md:text-2xl tracking-widest mt-2 mb-1">Act I Adventure Book</p>
+      <p data-id="51" class="text-gold/60 italic text-base md:text-lg mt-4 mb-6 garamond">"THE STARS ARE RIGHT"</p>
+      <div data-id="52" class="ornament text-gold/40">~ ✦ ~</div>
+      <p data-id="53" class="text-gold/50 italic max-w-xl mx-auto mt-6 garamond text-base md:text-lg leading-relaxed">
+        "The sea is awakening. The stars align. And something ancient stirs beneath the waves."
+      </p>
+      <div data-id="54" class="ornament text-gold/30 mt-6">~ ✦ ~</div>
+      <p data-id="55" class="cinzel text-gold/40 text-xs tracking-[0.2em] mt-8 uppercase">
+        For 3–6 Players &nbsp;|&nbsp; Levels 1–5 &nbsp;|&nbsp; A Mythos Horror Mystery Campaign
+      </p>
+      <p data-id="56" class="cinzel text-gold/30 text-xs mt-4 tracking-wider">By Cesar Zaldivar</p>
+    </section>
+
+    <!-- Content wrapper -->
+    <div data-id="57" class="max-w-4xl mx-auto px-5 md:px-10 py-10 md:pt-6">
+
+      <!-- ===== PREFACE ===== -->
+      <section data-id="58" id="preface" class="pb-12 border-b border-gold/10">
+        <h1 data-id="59" class="text-2xl md:text-3xl mb-6">Preface: How to Use This Book</h1>
+        <p data-id="60" class="mb-4">Cthulhu's Terror Nights: Act I — "The Stars Are Right" is a complete horror-mystery adventure designed for the D&amp;D 5e 2024 rules system. This book contains everything you need to run the first act of a multi-act Mythos campaign: two fully designed sessions with scene-by-scene structure, complete skill challenges, a player options chapter (Passions, Dreadful Insights, Backgrounds, and Origin Feats), an NPC database, a Monster Index, DM cheat sheets, player handouts, and DM prompt templates.</p>
+        <p data-id="61" class="mb-6">The tone of this campaign is cosmic horror, mystery, investigation, and survival. The players are not superheroes facing evil they can punch away — they are ordinary people who have stumbled into a conspiracy older than recorded history.</p>
+
+        <div data-id="62" class="callout-warning">
+          <h3 data-id="63" class="text-danger cinzel text-sm uppercase tracking-wider flex items-center gap-2 mb-3">
+            <i data-id="64" data-lucide="alert-triangle" class="w-5 h-5"></i> Safety Tools — Read Before Play
+          </h3>
+          <ul data-id="65" class="space-y-3 list-none pl-0 m-0">
+            <li data-id="66"><strong data-id="67">X-Card:</strong> Any player may tap the X-Card (or say "X") to skip or edit content immediately, no questions asked.</li>
+            <li data-id="68"><strong data-id="69">Lines &amp; Veils:</strong> Before Session 1, establish Lines (content that never appears) and Veils (content that happens off-screen).</li>
+            <li data-id="70"><strong data-id="71">Open-Door Policy:</strong> Any player may step away from the table at any time without explanation.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ===== PART ONE: LORE CODEX ===== -->
+      <section data-id="72" id="lore" class="pt-8">
+        <div data-id="73" class="part-banner" data-part="lore-content">
+          <div data-id="74">
+            <p data-id="75" class="text-xs text-gold/50 tracking-widest uppercase m-0 mb-1">Part One</p>
+            <h1 data-id="76" class="text-xl md:text-2xl text-gold m-0">Lore Codex</h1>
+          </div>
+          <i data-id="77" data-lucide="chevron-down" class="w-5 h-5 text-gold/50 part-chevron"></i>
+        </div>
+        <div data-id="78" id="lore-content" class="part-content">
+
+          <!-- The Mythos -->
+          <div data-id="79" id="mythos" class="pb-10 border-b border-gold/10 pt-6">
+            <h2 data-id="80" class="text-xl md:text-2xl mb-4">What Is the Cthulhu Mythos?</h2>
+            <p data-id="81" class="mb-4">Beneath recorded history lie the Great Old Ones — entities of incomprehensible power who are not dead but dreaming. In this campaign the Mythos is not religion or myth — it is fact hidden behind the veneer of history. The Great Old Ones are real. This is not a campaign about heroes defeating evil. It is about people who discover the truth about reality — and choose, in spite of that truth, to resist.</p>
+
+            <h2 data-id="82" class="text-xl md:text-2xl mb-4 mt-8">The Stars Are Right</h2>
+            <p data-id="83" class="mb-4">Once per millennium, a celestial phenomenon called The Alignment creates resonance between the physical world and the prison-dimensions where the Great Old Ones slumber. The current alignment is in progress — it began three weeks before the campaign opens. The party has roughly four weeks before the window closes.</p>
+
+            <h2 data-id="84" class="text-xl md:text-2xl mb-4 mt-8">The Sea Awakens</h2>
+            <p data-id="85">As the alignment deepens, the influence of sleeping Mythos entities bleeds into the physical world through the ocean. Strange weather, unprecedented whirlpools, ship disappearances, and bizarre sea creature behavior are the first signs. The entity known as The Dreaming Thing — a manifestation of Cthulhu — stirs in its deep-ocean prison.</p>
+          </div>
+
+          <!-- Campaign Overview -->
+          <div data-id="86" id="overview" class="pb-10 border-b border-gold/10 pt-8">
+            <h1 data-id="87" class="text-2xl md:text-3xl mb-6">Campaign Overview</h1>
+            <div data-id="88" class="overflow-x-auto">
+              <table data-id="89" class="campaign-table">
+                <thead data-id="90">
+                  <tr data-id="91"><th data-id="92">Act</th><th data-id="93">Title</th><th data-id="94">Levels</th><th data-id="95">Summary</th></tr>
+                </thead>
+                <tbody data-id="96">
+                  <tr data-id="97"><td data-id="98" class="cinzel font-semibold">Act I</td><td data-id="99">"The Stars Are Right"</td><td data-id="100">1–5</td><td data-id="101">The players are drawn into the conspiracy aboard the Unsinkable III. They survive a catastrophic storm, protect two mysterious children called Resonants, and wash ashore on a fog-shrouded island that should not exist.</td></tr>
+                  <tr data-id="102"><td data-id="103" class="cinzel font-semibold">Act II</td><td data-id="104">"Waterdeep Underbelly"</td><td data-id="105">5–9</td><td data-id="106">Rescued and brought to Waterdeep, the party discovers the Cult of the Drowned God has deep roots in the city — among merchants, city officials, and the city guard.</td></tr>
+                  <tr data-id="107"><td data-id="108" class="cinzel font-semibold">Act III</td><td data-id="109">"The Ritual Site"</td><td data-id="110">9–15</td><td data-id="111">The trail leads to a remote volcanic island where the summoning will take place. The party must reach it and confront the High Apostle before the alignment window closes.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Factions -->
+          <div data-id="112" id="factions" class="pb-10 border-b border-gold/10 pt-8">
+            <h1 data-id="113" class="text-2xl md:text-3xl mb-6">Factions</h1>
+
+            <div data-id="114" class="callout-faction">
+              <h3 data-id="115" class="cinzel text-base text-danger mb-2">The Cult of the Drowned God</h3>
+              <p data-id="116">Fanatical worshippers of Cthulhu who believe the Resonant children are ritual keys. They operate in secret across port cities, embedded in merchant guilds, shipping companies, and dockworker unions.</p>
+            </div>
+
+            <div data-id="117" class="callout-faction">
+              <h3 data-id="118" class="cinzel text-base text-header mb-2">The Wardens of the Veil</h3>
+              <p data-id="119">A secret society of investigators, scholars, and warriors. Criella, the tiefling ranger, is a senior Warden. Most long-serving Wardens carry multiple Dreadful Insights.</p>
+            </div>
+
+            <div data-id="120" class="callout-faction">
+              <h3 data-id="121" class="cinzel text-base mb-2" style="color:#3a5a8a;">The Sapphire Mystic</h3>
+              <p data-id="122">A neutral magical order based in Waterdeep. They possess texts crucial to understanding the ritual. Whether they become allies or obstacles depends on how the party approaches them.</p>
+            </div>
+          </div>
+
+          <!-- Key Locations -->
+          <div data-id="123" id="locations" class="pb-10 pt-8">
+            <h1 data-id="124" class="text-2xl md:text-3xl mb-6">Key Locations</h1>
+
+            <div data-id="125" class="callout-parchment">
+              <h3 data-id="126" class="cinzel text-base text-header mb-2">1. The "Unsinkable III"</h3>
+              <p data-id="127">A three-masted merchant vessel ~200 feet long. <strong data-id="128">Decks:</strong> Main Deck (rigging), Galley/Dining Level, Below-Deck Passenger Quarters, Cargo Hold, Captain's Quarters.</p>
+            </div>
+
+            <div data-id="129" class="callout-parchment">
+              <h3 data-id="130" class="cinzel text-base text-header mb-2">2. The Open Sea</h3>
+              <p data-id="131">Three to four days from Waterdeep. The horizon featureless, vast, humbling. 4,000 feet deep beneath the hull.</p>
+            </div>
+
+            <div data-id="132" class="callout-parchment">
+              <h3 data-id="133" class="cinzel text-base text-header mb-2">3. The Dreaming Stone (Remote Island)</h3>
+              <p data-id="134">A volcanic, fog-shrouded island ~300 miles from any charted landmass. Dense jungle, wrong sounds. Ancient stone structures at its center carved with elder signs.</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===== PART TWO: PLAYER OPTIONS ===== -->
+      <section data-id="135" id="player-options" class="pt-2">
+        <div data-id="136" class="part-banner" data-part="player-options-content">
+          <div data-id="137">
+            <p data-id="138" class="text-xs text-gold/50 tracking-widest uppercase m-0 mb-1">Part Two</p>
+            <h1 data-id="139" class="text-xl md:text-2xl text-gold m-0">Player Options</h1>
+          </div>
+          <i data-id="140" data-lucide="chevron-down" class="w-5 h-5 text-gold/50 part-chevron"></i>
+        </div>
+        <div data-id="141" id="player-options-content" class="part-content">
+
+          <!-- Passions -->
+          <div data-id="142" id="passions" class="pb-10 border-b border-gold/10 pt-6">
+            <h1 data-id="143" class="text-2xl md:text-3xl mb-2">Chapter 1 — Passions and Dreadful Insights</h1>
+            <h2 data-id="144" class="text-xl mb-4 mt-6">What is a Passion?</h2>
+            <p data-id="145" class="mb-6">A Passion is a belief that shapes your character's actions. It might send you into danger, but it also offers benefits.</p>
+
+            <h2 data-id="146" class="text-xl mb-4">Using Passions</h2>
+            <div data-id="147" class="callout-gold">
+              <h4 data-id="148" class="cinzel text-sm uppercase tracking-wider mb-2 text-header">Invoking a Passion</h4>
+              <p data-id="149">When you make a d20 Test, add <strong data-id="150">+5</strong> if the GM agrees the roll relates to your Passion. Declare before rolling. Once used, cannot gain this benefit again until you Embrace your Passion.</p>
+            </div>
+            <div data-id="151" class="callout-gold">
+              <h4 data-id="152" class="cinzel text-sm uppercase tracking-wider mb-2 text-header">Following a Passion (Embrace)</h4>
+              <p data-id="153">Follow GM's suggestion aligned to Passion → gain <strong data-id="154">Heroic Inspiration + Temporary HP</strong> equal to 5 + your level. Resets your Invoke.</p>
+            </div>
+            <div data-id="155" class="callout-gold">
+              <h4 data-id="156" class="cinzel text-sm uppercase tracking-wider mb-2 text-header">Denying a Passion</h4>
+              <p data-id="157">Roll d20. <strong data-id="158">10+:</strong> resist freely. <strong data-id="159">9 or lower:</strong> cannot gain or use Heroic Inspiration until Long Rest.</p>
+            </div>
+
+            <h2 data-id="160" class="text-xl mb-4 mt-8">Example Passions</h2>
+            <div data-id="161" class="overflow-x-auto">
+              <table data-id="162" class="campaign-table">
+                <thead data-id="163"><tr data-id="164"><th data-id="165">Alignment</th><th data-id="166">d4</th><th data-id="167">Passion</th></tr></thead>
+                <tbody data-id="168">
+                  <tr data-id="169"><td data-id="170" class="cinzel font-semibold">Chaos</td><td data-id="171">1–4</td><td data-id="172">Haunted, Insatiable Curiosity, Seeker of Forbidden Truths, Thirst for Vengeance</td></tr>
+                  <tr data-id="173"><td data-id="174" class="cinzel font-semibold">Evil</td><td data-id="175">1–4</td><td data-id="176">Arcane Hunger, Haunted, Wealth at Any Cost, Hatred</td></tr>
+                  <tr data-id="177"><td data-id="178" class="cinzel font-semibold">Good</td><td data-id="179">1–4</td><td data-id="180">Haunted, Survivor's Guilt, Justice for All, Loyalty</td></tr>
+                  <tr data-id="181"><td data-id="182" class="cinzel font-semibold">Lawful</td><td data-id="183">1–4</td><td data-id="184">Haunted, Heroic Impulse, Skeptical to a Fault, Devoted Faith</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3 data-id="185" class="text-lg mt-8 mb-4">Passion Descriptions</h3>
+            <div data-id="186" class="grid gap-3">
+              <div data-id="187" class="callout-parchment"><strong data-id="188" class="cinzel text-sm">Arcane Hunger:</strong> You crave arcane power. Where others see lines not to cross, you see invitation. Anything, even your life, is worth risking to uncover the arcane.</div>
+              <div data-id="189" class="callout-parchment"><strong data-id="190" class="cinzel text-sm">Devoted Faith:</strong> Ardent supporter of a deity whose ethos overrides all other concerns. You'd sacrifice yourself rather than give an inch.</div>
+              <div data-id="191" class="callout-parchment"><strong data-id="192" class="cinzel text-sm">Hatred:</strong> Deep overwhelming hatred for a person, faction, creature, or deity. You'd die happy to destroy the object of your hatred.</div>
+              <div data-id="193" class="callout-parchment"><strong data-id="194" class="cinzel text-sm">Haunted:</strong> Vague memories of a strange event compel you to investigate places, sounds, or scents that tug at that memory.</div>
+              <div data-id="195" class="callout-parchment"><strong data-id="196" class="cinzel text-sm">Heroic Impulse:</strong> Deep selflessness drives you to confront evil. Your sense of self-preservation rarely factors in.</div>
+              <div data-id="197" class="callout-parchment"><strong data-id="198" class="cinzel text-sm">Insatiable Curiosity:</strong> Driven to uncover secrets regardless of danger. Bad habit of listening in and poking into warned-off places.</div>
+              <div data-id="199" class="callout-parchment"><strong data-id="200" class="cinzel text-sm">Justice for All:</strong> Can't abide bullies or tyrants. Known to punch a guard for a two-week dungeon stay — worth it.</div>
+              <div data-id="201" class="callout-parchment"><strong data-id="202" class="cinzel text-sm">Loyalty:</strong> Loyal to a group, nation, or ideal. Its needs stand above yours in almost every situation.</div>
+              <div data-id="203" class="callout-parchment"><strong data-id="204" class="cinzel text-sm">Seeker of Forbidden Truths:</strong> The world is more dangerous than anyone admits. You seek to expose the fraud of current tradition.</div>
+              <div data-id="205" class="callout-parchment"><strong data-id="206" class="cinzel text-sm">Skeptical to a Fault:</strong> The Mythos? Clearly a folktale. You investigate to dispel nonsense about strange phenomena.</div>
+              <div data-id="207" class="callout-parchment"><strong data-id="208" class="cinzel text-sm">Survivor's Guilt:</strong> You survived a terrible incident. Driven by near-self-destructive urge to ensure it never happens again.</div>
+              <div data-id="209" class="callout-parchment"><strong data-id="210" class="cinzel text-sm">Thirst for Vengeance:</strong> Someone wronged you. You will even the score at any cost. Tunnel vision. Smash your enemies.</div>
+              <div data-id="211" class="callout-parchment"><strong data-id="212" class="cinzel text-sm">Wealth at Any Cost:</strong> You want wealth. Offers of riches tug at your mind, making them impossible to resist.</div>
+            </div>
+          </div>
+
+          <!-- Dreadful Insights -->
+          <div data-id="213" id="insights" class="pb-10 border-b border-gold/10 pt-8">
+            <h2 data-id="214" class="text-xl md:text-2xl mb-2">Dreadful Insights</h2>
+            <p data-id="215" class="italic text-gold-dark/80 mb-6">"He who fights with monsters might take care lest he thereby become a monster." — Nietzsche</p>
+
+            <div data-id="216" class="callout-dark">
+              <h4 data-id="217" class="cinzel text-sm uppercase tracking-wider mb-2">Gaining a Dreadful Insight</h4>
+              <p data-id="218" class="text-gold/80">Some creatures trigger this. Make a Wisdom saving throw. <strong data-id="219">Succeed:</strong> no Insight gained. <strong data-id="220">Fail:</strong> you gain a Dreadful Insight — a new Passion.</p>
+            </div>
+            <div data-id="221" class="callout-dark">
+              <h4 data-id="222" class="cinzel text-sm uppercase tracking-wider mb-2">Using a Dreadful Insight</h4>
+              <p data-id="223" class="text-gold/80">Works like any other Passion with full Invoke and Follow mechanics. Tends to pull you along a self-destructive path.</p>
+            </div>
+            <div data-id="224" class="callout-dark">
+              <h4 data-id="225" class="cinzel text-sm uppercase tracking-wider mb-2">Losing a Dreadful Insight</h4>
+              <p data-id="226" class="text-gold/80">Resolved when its goal is achieved. Each Insight describes how to lose it specifically.</p>
+            </div>
+
+            <div data-id="227" class="overflow-x-auto mt-6">
+              <table data-id="228" class="campaign-table">
+                <thead data-id="229"><tr data-id="230"><th data-id="231">Insight</th><th data-id="232">Wis Save DC</th><th data-id="233">Effect as Passion</th><th data-id="234">How to Lose It</th></tr></thead>
+                <tbody data-id="235">
+                  <tr data-id="236"><td data-id="237" class="cinzel font-semibold text-sm">The Stars Are Alive</td><td data-id="238">13–14</td><td data-id="239"><strong data-id="240">Embrace:</strong> Advantage on Arcana checks about Mythos. <strong data-id="241">Deny:</strong> Involuntarily speak a forbidden star-name.</td><td data-id="242">Destroy or banish a Star-Spawn.</td></tr>
+                  <tr data-id="243"><td data-id="244" class="cinzel font-semibold text-sm">We Are Not Alone</td><td data-id="245">12–13</td><td data-id="246"><strong data-id="247">Embrace:</strong> Sense Mythos creature within 60 ft (no action). <strong data-id="248">Deny:</strong> Disadvantage on Charisma checks until next rest.</td><td data-id="249">Survive a full session without a Mythos encounter.</td></tr>
+                  <tr data-id="250"><td data-id="251" class="cinzel font-semibold text-sm">The Veil Is Thin</td><td data-id="252">14</td><td data-id="253"><strong data-id="254">Embrace:</strong> Perceive invisible Ethereal creatures until end of scene. <strong data-id="255">Deny:</strong> Incapacitated 1 round (DC 13 Con save ends).</td><td data-id="256">Lay to rest a creature between planes.</td></tr>
+                  <tr data-id="257"><td data-id="258" class="cinzel font-semibold text-sm">Nothing Matters</td><td data-id="259">15</td><td data-id="260"><strong data-id="261">Embrace:</strong> Immune to Frightened 1 hour. <strong data-id="262">Deny:</strong> Cannot receive Heroic Inspiration until next Passion Embrace.</td><td data-id="263">Perform a selfless act that directly costs you something significant.</td></tr>
+                  <tr data-id="264"><td data-id="265" class="cinzel font-semibold text-sm">The Ritual Words</td><td data-id="266">13</td><td data-id="267"><strong data-id="268">Embrace:</strong> Speak memorized phrase — creatures within 10 ft make DC 13 Wis save or Stunned (1/Long Rest). <strong data-id="269">Deny:</strong> 1d6 psychic damage.</td><td data-id="270">Refuse to speak the words even when doing so would save your life.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Backgrounds & Feats -->
+          <div data-id="271" id="feats" class="pb-10 pt-8">
+            <h1 data-id="272" class="text-2xl md:text-3xl mb-2">Chapter 2 — Backgrounds and Feats</h1>
+            <h2 data-id="273" class="text-xl mb-4 mt-6">The Mythos Investigator Background</h2>
+            <div data-id="274" class="overflow-x-auto">
+              <table data-id="275" class="campaign-table">
+                <thead data-id="276"><tr data-id="277"><th data-id="278">Feature</th><th data-id="279">Detail</th></tr></thead>
+                <tbody data-id="280">
+                  <tr data-id="281"><td data-id="282" class="cinzel font-semibold text-sm">Ability Scores</td><td data-id="283">Increase one by 2 and another by 1, OR three different by 1 (none exceed 20)</td></tr>
+                  <tr data-id="284"><td data-id="285" class="cinzel font-semibold text-sm">Feat</td><td data-id="286">Choose any Origin Feat</td></tr>
+                  <tr data-id="287"><td data-id="288" class="cinzel font-semibold text-sm">Skill Proficiencies</td><td data-id="289">Choose any two skills</td></tr>
+                  <tr data-id="290"><td data-id="291" class="cinzel font-semibold text-sm">Tool Proficiency</td><td data-id="292">Choose any one tool</td></tr>
+                  <tr data-id="293"><td data-id="294" class="cinzel font-semibold text-sm">Equipment</td><td data-id="295">50 gp</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h2 data-id="296" class="text-xl mb-4 mt-8">New Investigator Tools</h2>
+            <div data-id="297" class="callout-gold">
+              <h4 data-id="298" class="cinzel text-sm mb-1"><strong data-id="299">Fingerprint Kit</strong> (25 gp) &nbsp;|&nbsp; Intelligence &nbsp;|&nbsp; 1 lb</h4>
+              <p data-id="300">Reveal fingerprints on objects. <strong data-id="301">Utilize:</strong> Reveal and sketch (DC 20), or match against humanoid (DC 15).</p>
+            </div>
+            <div data-id="302" class="callout-gold">
+              <h4 data-id="303" class="cinzel text-sm mb-1"><strong data-id="304">Witchboard</strong> (15 gp) &nbsp;|&nbsp; Charisma &nbsp;|&nbsp; 1 lb</h4>
+              <p data-id="305">Contact Ethereal creatures. <strong data-id="306">Utilize:</strong> Exchange messages up to 10 words with Ethereal creature within 30 ft (DC 15).</p>
+            </div>
+
+            <h2 data-id="307" class="text-xl mb-4 mt-8">Origin Feats</h2>
+
+            <div data-id="308" class="callout-dark mb-4">
+              <h4 data-id="309" class="cinzel text-sm uppercase tracking-wider mb-2 text-danger">I Fought, I Lived <span data-id="310" class="text-gold/50 normal-case tracking-normal">(Origin Feat)</span></h4>
+              <p data-id="311" class="text-gold/80 text-sm">You confronted a horror and it learned its mistake.</p>
+              <ul data-id="312" class="text-gold/80 text-sm mt-2 space-y-1 list-none pl-0">
+                <li data-id="313"><strong data-id="314">Defiant Strike:</strong> While Bloodied and hit, treat damage as maximum (1/long rest).</li>
+                <li data-id="315"><strong data-id="316">Indomitable Heart:</strong> If Frightened at start of turn, roll d20. 10+: lose condition.</li>
+              </ul>
+            </div>
+
+            <div data-id="317" class="callout-dark mb-4">
+              <h4 data-id="318" class="cinzel text-sm uppercase tracking-wider mb-2 text-danger">I Hid from the Terror <span data-id="319" class="text-gold/50 normal-case tracking-normal">(Origin Feat)</span></h4>
+              <p data-id="320" class="text-gold/80 text-sm">You hid where it couldn't reach.</p>
+              <ul data-id="321" class="text-gold/80 text-sm mt-2 space-y-1 list-none pl-0">
+                <li data-id="322"><strong data-id="323">Shadowed Strike:</strong> Attack and keep Invisible condition (proficiency bonus uses/long rest).</li>
+                <li data-id="324"><strong data-id="325">Beneath Notice:</strong> Can hide if lightly obscured or 30+ ft from larger creature.</li>
+                <li data-id="326"><strong data-id="327">Merge into Shadows:</strong> Perception checks against you while Invisible have Disadvantage.</li>
+              </ul>
+            </div>
+
+            <div data-id="328" class="callout-dark mb-4">
+              <h4 data-id="329" class="cinzel text-sm uppercase tracking-wider mb-2 text-danger">I Pierced the Illusion <span data-id="330" class="text-gold/50 normal-case tracking-normal">(Origin Feat)</span></h4>
+              <p data-id="331" class="text-gold/80 text-sm">You saw through their disguise.</p>
+              <ul data-id="332" class="text-gold/80 text-sm mt-2 space-y-1 list-none pl-0">
+                <li data-id="333"><strong data-id="334">Clear Senses:</strong> If Charmed at start of turn, d20 — 10+ lose condition.</li>
+                <li data-id="335"><strong data-id="336">Ear for Falsehood:</strong> Detect a knowing lie (proficiency bonus uses/long rest).</li>
+                <li data-id="337"><strong data-id="338">Subtle Interrogation:</strong> Advantage on Insight vs. creatures you speak with.</li>
+              </ul>
+            </div>
+
+            <div data-id="339" class="callout-dark mb-4">
+              <h4 data-id="340" class="cinzel text-sm uppercase tracking-wider mb-2 text-danger">I Opened the Gate <span data-id="341" class="text-gold/50 normal-case tracking-normal">(Origin Feat)</span></h4>
+              <p data-id="342" class="text-gold/80 text-sm">You didn't mean for this to happen.</p>
+              <ul data-id="343" class="text-gold/80 text-sm mt-2 space-y-1 list-none pl-0">
+                <li data-id="344"><strong data-id="345">Delver into Forgotten Lore:</strong> Learn three languages.</li>
+                <li data-id="346"><strong data-id="347">Foul Arcana:</strong> Grant spell +2 to save DC but you are Paralyzed until start of next turn (proficiency bonus uses/long rest).</li>
+              </ul>
+            </div>
+
+            <div data-id="348" class="callout-dark mb-4">
+              <h4 data-id="349" class="cinzel text-sm uppercase tracking-wider mb-2 text-danger">I Survived to Tell the Tale <span data-id="350" class="text-gold/50 normal-case tracking-normal">(Origin Feat)</span></h4>
+              <p data-id="351" class="text-gold/80 text-sm">Quick feet and survival instinct.</p>
+              <ul data-id="352" class="text-gold/80 text-sm mt-2 space-y-1 list-none pl-0">
+                <li data-id="353"><strong data-id="354">Instinct to Survive:</strong> When reduced to 0 HP, regain HP equal to level (1/long rest).</li>
+                <li data-id="355"><strong data-id="356">Superior Speed:</strong> +10 to speed.</li>
+                <li data-id="357"><strong data-id="358">Wriggle Free:</strong> If Grappled, d20 — 10+: avoid condition.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===== PART THREE: THE ADVENTURE ===== -->
+      <section data-id="359" id="adventure" class="pt-2">
+        <div data-id="360" class="part-banner" data-part="adventure-content">
+          <div data-id="361">
+            <p data-id="362" class="text-xs text-gold/50 tracking-widest uppercase m-0 mb-1">Part Three</p>
+            <h1 data-id="363" class="text-xl md:text-2xl text-gold m-0">The Adventure — Act I</h1>
+          </div>
+          <i data-id="364" data-lucide="chevron-down" class="w-5 h-5 text-gold/50 part-chevron"></i>
+        </div>
+        <div data-id="365" id="adventure-content" class="part-content">
+          <p data-id="366" class="italic text-gold-dark/60 mt-2 mb-6">Two complete sessions: scene by scene, skill challenge by skill challenge.</p>
+
+          <!-- Session 1 -->
+          <div data-id="367" id="session1" class="pb-10 pt-4">
+            <div data-id="368" class="callout-dark mb-6">
+              <p data-id="369" class="cinzel text-xs text-gold/50 tracking-widest uppercase m-0 mb-1">Session One</p>
+              <h2 data-id="370" class="cinzel text-lg md:text-xl text-gold m-0 mb-2">"A Boat and the Old Man's Tales"</h2>
+              <p data-id="371" class="text-gold/60 text-sm m-0">Recommended Party Level: 1–3 &nbsp;|&nbsp; Session Length: 3–4 Hours &nbsp;|&nbsp; Themes: Mystery, Social Intrigue, Survival, First Encounter with the Mythos</p>
+            </div>
+
+            <div data-id="372" class="callout-gold mb-6">
+              <h4 data-id="373" class="cinzel text-sm mb-2 flex items-center gap-2"><i data-id="374" data-lucide="book-open" class="w-4 h-4"></i> DM Introduction</h4>
+              <p data-id="375">"This session is a slow burn. Resist the urge to reveal the cult too quickly. The horror of Act I is that the party suspects something is wrong before they can name it. Let the skill challenge drive discovery. The storm that ends the session should feel sudden and inevitable."</p>
+            </div>
+
+            <div data-id="376" class="read-aloud">
+              <p data-id="377" class="pl-6">"The night is silent, the night sky with all its stars blends with the sea in a mirroring image. One looking out in the distance can get lost in trying to find the horizon. A light breeze comes through and keeps the headwind on the sails — a pleasant and calm night indeed.</p>
+              <p data-id="378" class="mt-3 pl-6">The ship 'Unsinkable III' is heading into deep water. Sailors keep watch and secure all the sails. In the galley, passengers gather for dinner. Four tables are scattered around: one large table for eight, two small ones for two, and one medium table for four.</p>
+              <p data-id="379" class="mt-3 pl-6">An old sailor sits at the medium table, eating ale-sunken bread, telling sea stories to a young woman in a dark ranger-green cloak and two younglings — a half-orc girl and a human boy — who sit enraptured by his tales."</p>
+            </div>
+
+            <!-- Scene 1 -->
+            <h3 data-id="380" class="text-lg mt-8 mb-3 cinzel text-header flex items-center gap-2"><i data-id="381" data-lucide="navigation" class="w-5 h-5"></i> Scene 1 — The Galley (Opening)</h3>
+            <div data-id="382" class="read-aloud">
+              <p data-id="383" class="pl-6">"The cook emerges from the kitchen, wiping his hands on an apron. 'Please excuse the old man. Our captain insisted on letting him sail with the Unsinkable III... thus far this one has managed to do just that.' He pauses for the joke to land. 'What can I get you?'"</p>
+            </div>
+            <p data-id="384" class="mt-3"><strong data-id="385">Available options:</strong> Ale, mead, sunken bread, plain bread.</p>
+
+            <div data-id="386" class="callout-gold mt-3">
+              <h4 data-id="387" class="cinzel text-sm mb-1"><i data-id="388" data-lucide="info" class="w-4 h-4 inline"></i> DM Note</h4>
+              <p data-id="389">The cook is on his first voyage — DC 10 Insight/Intimidation reveals this.</p>
+            </div>
+
+            <h4 data-id="390" class="cinzel text-sm mt-6 mb-3 uppercase tracking-wider text-header">Key NPCs Present</h4>
+            <div data-id="391" class="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <div data-id="392" class="callout-parchment py-2 px-4"><strong data-id="393">Elias Cobb</strong> — The Old Sailor</div>
+              <div data-id="394" class="callout-parchment py-2 px-4"><strong data-id="395">Criella</strong> — Tiefling Ranger</div>
+              <div data-id="396" class="callout-parchment py-2 px-4"><strong data-id="397">Mira</strong> — Half-orc girl, age 10 (The First Key)</div>
+              <div data-id="398" class="callout-parchment py-2 px-4"><strong data-id="399">Tobias</strong> — Human boy, age 9 (The Second Key)</div>
+              <div data-id="400" class="callout-parchment py-2 px-4"><strong data-id="401">Two Skeptical Passengers</strong> — (secretly Cult spies)</div>
+              <div data-id="402" class="callout-parchment py-2 px-4"><strong data-id="403">Two Quiet Figures</strong> — (Cult enforcers)</div>
+              <div data-id="404" class="callout-parchment py-2 px-4"><strong data-id="405">Bartholomew "Barts" Fenwick</strong> — The Cook</div>
+            </div>
+
+            <div data-id="406" class="callout-dark mt-6">
+              <h4 data-id="407" class="cinzel text-sm uppercase tracking-wider mb-2 text-gold/80"><i data-id="408" data-lucide="flame" class="w-4 h-4 inline"></i> Passion Moment — Scene 1</h4>
+              <p data-id="409" class="text-gold/70 text-sm">Look for opportunities to challenge Passions here. A character with <em data-id="410">Insatiable Curiosity</em> might feel compelled to eavesdrop on the two quiet figures. A character with <em data-id="411">Heroic Impulse</em> may feel pulled to step between the younglings and whoever is watching them. A character with <em data-id="412">Haunted</em> might catch a scent or sound that tugs at their buried memory.</p>
+            </div>
+
+            <!-- Scene 2 -->
+            <h3 data-id="413" class="text-lg mt-10 mb-3 cinzel text-header flex items-center gap-2"><i data-id="414" data-lucide="search" class="w-5 h-5"></i> Scene 2 — Gathering Information</h3>
+            <p data-id="415" class="mb-4">The players have free time to explore the ship and interact with passengers.</p>
+
+            <h4 data-id="416" class="cinzel text-sm uppercase tracking-wider text-header mb-3">Skill Challenge: Identifying the Spies</h4>
+            <p data-id="417" class="mb-3"><strong data-id="418">Stakes:</strong> Can the party identify the cultists before the storm hits?</p>
+            <div data-id="419" class="overflow-x-auto">
+              <table data-id="420" class="campaign-table">
+                <thead data-id="421"><tr data-id="422"><th data-id="423">Skill</th><th data-id="424">DC</th><th data-id="425">Progress</th><th data-id="426">What Is Revealed</th></tr></thead>
+                <tbody data-id="427">
+                  <tr data-id="428"><td data-id="429" class="cinzel font-semibold text-sm">Insight</td><td data-id="430">12</td><td data-id="431">1</td><td data-id="432">The skeptical passengers' drunken mockery feels rehearsed, not genuine.</td></tr>
+                  <tr data-id="433"><td data-id="434" class="cinzel font-semibold text-sm">Perception</td><td data-id="435">14</td><td data-id="436">1</td><td data-id="437">The quiet figures are watching the younglings, not the old sailor.</td></tr>
+                  <tr data-id="438"><td data-id="439" class="cinzel font-semibold text-sm">Investigation</td><td data-id="440">15</td><td data-id="441">1</td><td data-id="442">Search of passenger quarters: strange symbols carved inside a trunk.</td></tr>
+                  <tr data-id="443"><td data-id="444" class="cinzel font-semibold text-sm">Persuasion/Deception</td><td data-id="445">13</td><td data-id="446">1</td><td data-id="447">Get the old sailor talking about who came aboard at the last port.</td></tr>
+                  <tr data-id="448"><td data-id="449" class="cinzel font-semibold text-sm">History</td><td data-id="450">20</td><td data-id="451">2</td><td data-id="452">Recognize the symbols as Cult of the Drowned God iconography.</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div data-id="453" class="callout-warning mt-4">
+              <h4 data-id="454" class="cinzel text-sm text-danger uppercase tracking-wider mb-1"><i data-id="455" data-lucide="alert-triangle" class="w-4 h-4 inline"></i> Warning Twist</h4>
+              <p data-id="456" class="text-sm"><strong data-id="457">End of Round 1</strong> — One quiet figure notices the party's investigation. From this point on, Insight and Persuasion DCs against crew members increase by 2.</p>
+            </div>
+
+            <h4 data-id="458" class="cinzel text-sm uppercase tracking-wider text-header mt-6 mb-3">Results</h4>
+            <div data-id="459" class="overflow-x-auto">
+              <table data-id="460" class="campaign-table">
+                <thead data-id="461"><tr data-id="462"><th data-id="463">Result</th><th data-id="464">Progress (Party of 4)</th><th data-id="465">Outcome</th></tr></thead>
+                <tbody data-id="466">
+                  <tr data-id="467"><td data-id="468" class="cinzel font-semibold text-sm">Success</td><td data-id="469">6+</td><td data-id="470">Party identifies both spies and both enforcers before the storm.</td></tr>
+                  <tr data-id="471"><td data-id="472" class="cinzel font-semibold text-sm">Partial Success</td><td data-id="473">3–5</td><td data-id="474">Party identifies either spies OR enforcers, not both.</td></tr>
+                  <tr data-id="475"><td data-id="476" class="cinzel font-semibold text-sm">Failure</td><td data-id="477">2 or fewer</td><td data-id="478">Party is unaware of the full threat when the storm hits.</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div data-id="479" class="callout-gold mt-4">
+              <h4 data-id="480" class="cinzel text-sm mb-1">If a Cultist Is Captured</h4>
+              <p data-id="481" class="text-sm">Run a Social Skill Challenge to extract information. They reveal the younglings are believed to be "the Keys."</p>
+            </div>
+
+            <div data-id="482" class="callout-dark mt-4">
+              <h4 data-id="483" class="cinzel text-sm uppercase tracking-wider mb-2 text-gold/80"><i data-id="484" data-lucide="flame" class="w-4 h-4 inline"></i> Passion Moment — Scene 2</h4>
+              <p data-id="485" class="text-gold/70 text-sm">Any character whose Passion relates to uncovering truth may add +5 to one relevant d20 Test. A character with <em data-id="486">Justice for All</em> faces a Follow moment if they witness intimidation of a passenger.</p>
+            </div>
+
+            <!-- Scene 3 -->
+            <h3 data-id="487" class="text-lg mt-10 mb-3 cinzel text-header flex items-center gap-2"><i data-id="488" data-lucide="cloud-lightning" class="w-5 h-5"></i> Scene 3 — The Storm</h3>
+            <div data-id="489" class="read-aloud">
+              <p data-id="490" class="pl-6">"Without warning, the ship lurches. The calm evening sky is swallowed by a roiling mass of black clouds that seemingly appeared from nowhere. The deck tilts. Through the porthole you see the sea transformed — mountains of dark water surging against the hull. A loud scream can be heard outside the galley. Men are falling — or being thrown — overboard."</p>
+            </div>
+
+            <h4 data-id="491" class="cinzel text-sm uppercase tracking-wider text-header mt-6 mb-3">Skill Challenge: Surviving the Deck</h4>
+            <p data-id="492" class="mb-3"><strong data-id="493">Stakes:</strong> Can the party stay aboard and reach the younglings before the cultists?</p>
+            <div data-id="494" class="overflow-x-auto">
+              <table data-id="495" class="campaign-table">
+                <thead data-id="496"><tr data-id="497"><th data-id="498">Skill</th><th data-id="499">DC</th><th data-id="500">Progress</th><th data-id="501">Action</th></tr></thead>
+                <tbody data-id="502">
+                  <tr data-id="503"><td data-id="504" class="cinzel font-semibold text-sm">Athletics</td><td data-id="505">14</td><td data-id="506">1</td><td data-id="507">Maintain footing on the heaving deck without falling.</td></tr>
+                  <tr data-id="508"><td data-id="509" class="cinzel font-semibold text-sm">Acrobatics</td><td data-id="510">13</td><td data-id="511">1</td><td data-id="512">Move across rain-slicked planking at full speed.</td></tr>
+                  <tr data-id="513"><td data-id="514" class="cinzel font-semibold text-sm">Strength (Save)</td><td data-id="515">15</td><td data-id="516">1</td><td data-id="517">Grab a rope or rail as the ship pitches violently.</td></tr>
+                  <tr data-id="518"><td data-id="519" class="cinzel font-semibold text-sm">Perception</td><td data-id="520">12</td><td data-id="521">1</td><td data-id="522">Spot a cult enforcer moving toward the younglings' cabin.</td></tr>
+                  <tr data-id="523"><td data-id="524" class="cinzel font-semibold text-sm">Arcana</td><td data-id="525">14</td><td data-id="526">2</td><td data-id="527">Recognize that the storm is not natural — it arrived too fast and too precisely.</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h4 data-id="528" class="cinzel text-sm uppercase tracking-wider text-header mt-6 mb-3">Results</h4>
+            <div data-id="529" class="overflow-x-auto">
+              <table data-id="530" class="campaign-table">
+                <thead data-id="531"><tr data-id="532"><th data-id="533">Result</th><th data-id="534">Progress</th><th data-id="535">Outcome</th></tr></thead>
+                <tbody data-id="536">
+                  <tr data-id="537"><td data-id="538" class="cinzel font-semibold text-sm">Success</td><td data-id="539">6+</td><td data-id="540">Party reaches the younglings before the cult enforcer.</td></tr>
+                  <tr data-id="541"><td data-id="542" class="cinzel font-semibold text-sm">Partial</td><td data-id="543">3–5</td><td data-id="544">Party arrives simultaneously — combat initiative is rolled.</td></tr>
+                  <tr data-id="545"><td data-id="546" class="cinzel font-semibold text-sm">Failure</td><td data-id="547">2 or fewer</td><td data-id="548">Cult enforcer reaches the younglings first — forced combat at disadvantage due to slick deck.</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div data-id="549" class="callout-dark mt-6">
+              <h4 data-id="550" class="cinzel text-sm uppercase tracking-wider mb-2 text-danger"><i data-id="551" data-lucide="anchor" class="w-4 h-4 inline"></i> Session 1 Ending</h4>
+              <p data-id="552" class="text-gold/80 text-sm">However the Skill Challenge resolves, the storm culminates in catastrophe. The ship breaks apart. The Read-Aloud for the sinking should be visceral and fast — no time to process, only react. Each character must make a <strong data-id="553">DC 13 Athletics or Strength save</strong> to stay conscious in the water. Those who fail are pulled under — unconscious but alive, caught on debris. <strong data-id="554">End session here.</strong></p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===== PART FOUR: NPC DATABASE ===== -->
+      <section data-id="555" id="npcs" class="pt-2">
+        <div data-id="556" class="part-banner" data-part="npcs-content">
+          <div data-id="557">
+            <p data-id="558" class="text-xs text-gold/50 tracking-widest uppercase m-0 mb-1">Part Four</p>
+            <h1 data-id="559" class="text-xl md:text-2xl text-gold m-0">NPC Database</h1>
+          </div>
+          <i data-id="560" data-lucide="chevron-down" class="w-5 h-5 text-gold/50 part-chevron"></i>
+        </div>
+        <div data-id="561" id="npcs-content" class="part-content pt-4">
+
+          <!-- Elias Cobb -->
+          <div data-id="562" class="npc-block">
+            <div data-id="563" class="npc-header">
+              <h3 data-id="564" class="text-base m-0">Elias Cobb <span data-id="565" class="text-gold/50 font-normal">— "The Old Sailor"</span></h3>
+              <p data-id="566" class="text-gold/50 text-xs mt-1 m-0">Role: Recurring Ally, Source of Lore</p>
+            </div>
+            <div data-id="567" class="npc-body">
+              <p data-id="568" class="mb-3"><strong data-id="569">Description:</strong> A weathered sailor in his 70s. Crinkled blue eyes that have seen too much ocean. He knows more about the sea's strangeness than he lets on — and far more about the cult than anyone suspects. He is not a cultist. He is something stranger: a man who looked into the Mythos decades ago and chose to keep living anyway.</p>
+              <p data-id="570" class="mb-3"><strong data-id="571">Personality:</strong> Warm, deflective, storytelling. Never directly warns the party — always implies.</p>
+              <p data-id="572" class="mb-3"><strong data-id="573">Secret:</strong> He has seen the Alignment happen once before. He knows what it means. He is on this ship deliberately.</p>
+              <p data-id="574" class="mb-3"><strong data-id="575">Key Information He Can Share:</strong> The children are special — "the sea knows their names." Strange things follow ships carrying cargo with deep-ocean origin. The storm is not weather. "When the sky and the sea stop being different things, run."</p>
+              <p data-id="576"><strong data-id="577">Mechanics:</strong> DC 15 Persuasion or Insight to get Elias to speak plainly. On a success, he reveals one of his secrets. On a failure, he tells another sea story.</p>
+            </div>
+          </div>
+
+          <!-- Criella -->
+          <div data-id="578" class="npc-block">
+            <div data-id="579" class="npc-header">
+              <h3 data-id="580" class="text-base m-0">Criella <span data-id="581" class="text-gold/50 font-normal">— "The Tiefling Ranger"</span></h3>
+              <p data-id="582" class="text-gold/50 text-xs mt-1 m-0">Role: Warden of the Veil, Potential Patron</p>
+            </div>
+            <div data-id="583" class="npc-body">
+              <p data-id="584" class="mb-3"><strong data-id="585">Description:</strong> Tall, with dark violet skin and filed-down horns worn as a statement of identity rather than concealment. She wears practical ranger clothing in hunter-green with silver Warden insignia hidden beneath a lapel. Her eyes are pale gold and unsettlingly direct.</p>
+              <p data-id="586" class="mb-3"><strong data-id="587">Personality:</strong> Precise, guarded, mission-focused. Warms slowly. Does not waste words.</p>
+              <p data-id="588" class="mb-3"><strong data-id="589">Secret:</strong> She has been tracking this specific cult cell for eight months. The children are her primary objective — she will not sacrifice them for any other goal.</p>
+              <p data-id="590" class="mb-3"><strong data-id="591">Key Information:</strong> The children are Resonants — a rare condition that makes them attuned to the frequency of the Great Old Ones' prison. The cult needs them alive and unharmed for the ritual to work. Criella knows where the Ritual Site is, but not how to stop the ritual once begun.</p>
+              <p data-id="592"><strong data-id="593">Mechanics:</strong> DC 14 Persuasion to get Criella to share her mission. She will not share everything at once. She evaluates the party's competence across Session 1 before trusting them.</p>
+            </div>
+          </div>
+
+          <!-- Mira -->
+          <div data-id="594" class="npc-block">
+            <div data-id="595" class="npc-header">
+              <h3 data-id="596" class="text-base m-0">Mira <span data-id="597" class="text-gold/50 font-normal">— "The First Key"</span></h3>
+              <p data-id="598" class="text-gold/50 text-xs mt-1 m-0">Role: Resonant Child, Charge</p>
+            </div>
+            <div data-id="599" class="npc-body">
+              <p data-id="600" class="mb-3"><strong data-id="601">Description:</strong> Half-orc, age 10. Taller than Tobias, quieter. Dark green skin, sharp tusks she has learned to speak around. Large grey eyes that seem to look slightly past whatever they're focused on. She draws the same spiral pattern repeatedly when given paper.</p>
+              <p data-id="602" class="mb-3"><strong data-id="603">Personality:</strong> Calm beyond her years. Not emotionally cold — emotionally deep. She does not panic. She also does not explain things clearly, because she does not experience the world clearly.</p>
+              <p data-id="604" class="mb-3"><strong data-id="605">Secret:</strong> She can hear the Dreaming Thing when the alignment is strong. Not words — feelings. Vast, indifferent feelings. She is not frightened by this, which is perhaps the most frightening thing about her.</p>
+              <p data-id="606"><strong data-id="607">Mechanics:</strong> DC 12 Insight reveals that Mira is tracking something invisible to everyone else. DC 16 Persuasion or Arcana to get her to describe what she hears.</p>
+            </div>
+          </div>
+
+          <!-- Tobias -->
+          <div data-id="608" class="npc-block">
+            <div data-id="609" class="npc-header">
+              <h3 data-id="610" class="text-base m-0">Tobias <span data-id="611" class="text-gold/50 font-normal">— "The Second Key"</span></h3>
+              <p data-id="612" class="text-gold/50 text-xs mt-1 m-0">Role: Resonant Child, Charge</p>
+            </div>
+            <div data-id="613" class="npc-body">
+              <p data-id="614" class="mb-3"><strong data-id="615">Description:</strong> Human, age 9. Smaller than he looks from a distance — thin, with shadows under his eyes from too-short sleep. He carries a small leather journal he does not let anyone read.</p>
+              <p data-id="616" class="mb-3"><strong data-id="617">Personality:</strong> Watchful, anxious, loyal to Mira. He is the one who asks practical questions, keeps track of time, worries about food. He is, in many ways, the more vulnerable of the two — he knows something is wrong and is frightened by it, which makes him more relatable and harder to watch.</p>
+              <p data-id="618" class="mb-3"><strong data-id="619">Secret:</strong> The journal contains star charts he has drawn in his sleep. He does not remember drawing them. They are accurate.</p>
+              <p data-id="620"><strong data-id="621">Mechanics:</strong> DC 10 Persuasion makes Tobias talkative. He knows the cult is following them — he has seen the marks. DC 14 Insight reveals he is hiding the journal intentionally.</p>
+            </div>
+          </div>
+
+          <!-- Barts -->
+          <div data-id="622" class="npc-block">
+            <div data-id="623" class="npc-header">
+              <h3 data-id="624" class="text-base m-0">Bartholomew "Barts" Fenwick <span data-id="625" class="text-gold/50 font-normal">— "The Cook"</span></h3>
+              <p data-id="626" class="text-gold/50 text-xs mt-1 m-0">Role: Comic Relief, Unwitting Information Source</p>
+            </div>
+            <div data-id="627" class="npc-body">
+              <p data-id="628" class="mb-3"><strong data-id="629">Description:</strong> Portly, perpetually damp with perspiration, enthusiastic about cooking and catastrophically naive about everything else. This is his first sea voyage. He agreed to it for the money.</p>
+              <p data-id="630" class="mb-3"><strong data-id="631">Personality:</strong> Cheerful, oblivious, talkative. He will tell the party everything he knows, which is very little and mostly wrong, but occasionally correct by accident.</p>
+              <p data-id="632"><strong data-id="633">Mechanics:</strong> DC 10 Persuasion gets Barts talking about any topic. He accidentally reveals useful information on a DC 15 Investigation check to parse what's actually true in what he's saying.</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===== PART FIVE: MONSTER INDEX ===== -->
+      <section data-id="634" id="monsters" class="pt-2">
+        <div data-id="635" class="part-banner" data-part="monsters-content">
+          <div data-id="636">
+            <p data-id="637" class="text-xs text-gold/50 tracking-widest uppercase m-0 mb-1">Part Five</p>
+            <h1 data-id="638" class="text-xl md:text-2xl text-gold m-0">Monster Index</h1>
+          </div>
+          <i data-id="639" data-lucide="chevron-down" class="w-5 h-5 text-gold/50 part-chevron"></i>
+        </div>
+        <div data-id="640" id="monsters-content" class="part-content pt-4">
+
+          <h3 data-id="641" class="cinzel text-base mb-3">Encounter Scaling Table</h3>
+          <div data-id="642" class="overflow-x-auto mb-8">
+            <table data-id="643" class="campaign-table">
+              <thead data-id="644"><tr data-id="645"><th data-id="646">Party Size</th><th data-id="647">Easy</th><th data-id="648">Medium</th><th data-id="649">Hard</th><th data-id="650">Deadly</th></tr></thead>
+              <tbody data-id="651">
+                <tr data-id="652"><td data-id="653">3 players</td><td data-id="654">CR 1/4</td><td data-id="655">CR 1/2</td><td data-id="656">CR 1</td><td data-id="657">CR 2</td></tr>
+                <tr data-id="658"><td data-id="659">4 players</td><td data-id="660">CR 1/2</td><td data-id="661">CR 1</td><td data-id="662">CR 2</td><td data-id="663">CR 3</td></tr>
+                <tr data-id="664"><td data-id="665">5 players</td><td data-id="666">CR 1</td><td data-id="667">CR 2</td><td data-id="668">CR 3</td><td data-id="669">CR 4</td></tr>
+                <tr data-id="670"><td data-id="671">6 players</td><td data-id="672">CR 2</td><td data-id="673">CR 3</td><td data-id="674">CR 4</td><td data-id="675">CR 5</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Cult Fanatic -->
+          <div data-id="676" class="stat-block">
+            <div data-id="677" class="stat-block-header">
+              <h3 data-id="678" class="text-base m-0">Cult Fanatic</h3>
+              <p data-id="679" class="text-gold/50 text-xs m-0 mt-1">Medium Humanoid (Any Race), CR 2</p>
+            </div>
+            <div data-id="680" class="stat-block-body">
+              <p data-id="681"><strong data-id="682">AC:</strong> 13 (leather armor) &nbsp;|&nbsp; <strong data-id="683">HP:</strong> 33 (6d8+6) &nbsp;|&nbsp; <strong data-id="684">Speed:</strong> 30 ft.</p>
+              <div data-id="685" class="stat-block-divider"></div>
+              <div data-id="686" class="stat-row">
+                <div data-id="687" class="stat-item"><span data-id="688" class="stat-val">11</span>STR (+0)</div>
+                <div data-id="689" class="stat-item"><span data-id="690" class="stat-val">14</span>DEX (+2)</div>
+                <div data-id="691" class="stat-item"><span data-id="692" class="stat-val">12</span>CON (+1)</div>
+                <div data-id="693" class="stat-item"><span data-id="694" class="stat-val">10</span>INT (+0)</div>
+                <div data-id="695" class="stat-item"><span data-id="696" class="stat-val">13</span>WIS (+1)</div>
+                <div data-id="697" class="stat-item"><span data-id="698" class="stat-val">14</span>CHA (+2)</div>
+              </div>
+              <div data-id="699" class="stat-block-divider"></div>
+              <p data-id="700" class="text-sm"><strong data-id="701">Skills:</strong> Deception +4, Persuasion +4, Religion +2</p>
+              <p data-id="702" class="text-sm"><strong data-id="703">Senses:</strong> Passive Perception 11 &nbsp;|&nbsp; <strong data-id="704">Languages:</strong> Any one language</p>
+              <div data-id="705" class="stat-block-divider"></div>
+              <p data-id="706" class="text-sm"><strong data-id="707">Dark Devotion.</strong> Advantage on saves against Charmed and Frightened.</p>
+              <p data-id="708" class="text-sm"><strong data-id="709">Spellcasting (Wis, DC 11).</strong> Cantrips: <em data-id="710">light, sacred flame, thaumaturgy</em>. 1st (4 slots): <em data-id="711">command, inflict wounds, shield of faith</em>. 2nd (3 slots): <em data-id="712">hold person, spiritual weapon</em>.</p>
+              <div data-id="713" class="stat-block-divider"></div>
+              <p data-id="714" class="text-sm cinzel uppercase tracking-wider text-danger text-xs font-semibold mb-2">Actions</p>
+              <p data-id="715" class="text-sm"><strong data-id="716">Multiattack.</strong> Two melee attacks.</p>
+              <p data-id="717" class="text-sm"><strong data-id="718">Dagger.</strong> <em data-id="719">Melee Weapon Attack:</em> +4 to hit, reach 5 ft., one target. <em data-id="720">Hit:</em> 1d4+2 piercing damage.</p>
+            </div>
+          </div>
+
+          <!-- Cult Enforcer -->
+          <div data-id="721" class="stat-block">
+            <div data-id="722" class="stat-block-header">
+              <h3 data-id="723" class="text-base m-0">Cult Enforcer</h3>
+              <p data-id="724" class="text-gold/50 text-xs m-0 mt-1">Medium Humanoid (Any Race), CR 3</p>
+            </div>
+            <div data-id="725" class="stat-block-body">
+              <p data-id="726"><strong data-id="727">AC:</strong> 16 (chain mail) &nbsp;|&nbsp; <strong data-id="728">HP:</strong> 52 (8d8+16) &nbsp;|&nbsp; <strong data-id="729">Speed:</strong> 30 ft.</p>
+              <div data-id="730" class="stat-block-divider"></div>
+              <div data-id="731" class="stat-row">
+                <div data-id="732" class="stat-item"><span data-id="733" class="stat-val">16</span>STR (+3)</div>
+                <div data-id="734" class="stat-item"><span data-id="735" class="stat-val">12</span>DEX (+1)</div>
+                <div data-id="736" class="stat-item"><span data-id="737" class="stat-val">14</span>CON (+2)</div>
+                <div data-id="738" class="stat-item"><span data-id="739" class="stat-val">10</span>INT (+0)</div>
+                <div data-id="740" class="stat-item"><span data-id="741" class="stat-val">11</span>WIS (+0)</div>
+                <div data-id="742" class="stat-item"><span data-id="743" class="stat-val">10</span>CHA (+0)</div>
+              </div>
+              <div data-id="744" class="stat-block-divider"></div>
+              <p data-id="745" class="text-sm"><strong data-id="746">Skills:</strong> Athletics +5, Intimidation +2</p>
+              <p data-id="747" class="text-sm"><strong data-id="748">Senses:</strong> Passive Perception 10 &nbsp;|&nbsp; <strong data-id="749">Languages:</strong> Common + one cult dialect</p>
+              <div data-id="750" class="stat-block-divider"></div>
+              <p data-id="751" class="text-sm"><strong data-id="752">Brine-Soaked Blade.</strong> On hit with melee weapon, target makes DC 12 Con save or is Poisoned until end of its next turn.</p>
+              <div data-id="753" class="stat-block-divider"></div>
+              <p data-id="754" class="text-sm cinzel uppercase tracking-wider text-danger text-xs font-semibold mb-2">Actions</p>
+              <p data-id="755" class="text-sm"><strong data-id="756">Multiattack.</strong> Two attacks with shortsword.</p>
+              <p data-id="757" class="text-sm"><strong data-id="758">Shortsword.</strong> <em data-id="759">Melee Weapon Attack:</em> +5 to hit, reach 5 ft., one target. <em data-id="760">Hit:</em> 1d6+3 piercing damage.</p>
+              <p data-id="761" class="text-sm cinzel uppercase tracking-wider text-danger text-xs font-semibold mb-2 mt-3">Bonus Actions</p>
+              <p data-id="762" class="text-sm"><strong data-id="763">Shove.</strong> Push one creature within 5 ft. DC 13 Strength save or pushed 10 ft. and prone.</p>
+            </div>
+          </div>
+
+          <!-- Drowned Shade -->
+          <div data-id="764" class="stat-block">
+            <div data-id="765" class="stat-block-header">
+              <h3 data-id="766" class="text-base m-0">Drowned Shade</h3>
+              <p data-id="767" class="text-gold/50 text-xs m-0 mt-1">Medium Undead, CR 2 (Mythos-adjacent)</p>
+            </div>
+            <div data-id="768" class="stat-block-body">
+              <p data-id="769"><strong data-id="770">AC:</strong> 11 &nbsp;|&nbsp; <strong data-id="771">HP:</strong> 26 (4d8+8) &nbsp;|&nbsp; <strong data-id="772">Speed:</strong> 0 ft., swim 40 ft.</p>
+              <div data-id="773" class="stat-block-divider"></div>
+              <div data-id="774" class="stat-row">
+                <div data-id="775" class="stat-item"><span data-id="776" class="stat-val">7</span>STR (-2)</div>
+                <div data-id="777" class="stat-item"><span data-id="778" class="stat-val">13</span>DEX (+1)</div>
+                <div data-id="779" class="stat-item"><span data-id="780" class="stat-val">14</span>CON (+2)</div>
+                <div data-id="781" class="stat-item"><span data-id="782" class="stat-val">6</span>INT (-2)</div>
+                <div data-id="783" class="stat-item"><span data-id="784" class="stat-val">10</span>WIS (+0)</div>
+                <div data-id="785" class="stat-item"><span data-id="786" class="stat-val">8</span>CHA (-1)</div>
+              </div>
+              <div data-id="787" class="stat-block-divider"></div>
+              <p data-id="788" class="text-sm"><strong data-id="789">Damage Resistances:</strong> Acid, Fire, Lightning, Thunder; Bludgeoning, Piercing, Slashing from nonmagical attacks</p>
+              <p data-id="790" class="text-sm"><strong data-id="791">Damage Immunities:</strong> Cold, Necrotic, Poison</p>
+              <p data-id="792" class="text-sm"><strong data-id="793">Condition Immunities:</strong> Exhaustion, Frightened, Grappled, Paralyzed, Petrified, Poisoned, Prone, Restrained</p>
+              <p data-id="794" class="text-sm"><strong data-id="795">Senses:</strong> Darkvision 60 ft., Passive Perception 10</p>
+              <div data-id="796" class="stat-block-divider"></div>
+              <p data-id="797" class="text-sm"><strong data-id="798">Incorporeal Movement.</strong> Can move through other creatures and objects as difficult terrain. Takes 5 force damage if it ends its turn inside an object.</p>
+              <p data-id="799" class="text-sm"><strong data-id="800">Water Bound.</strong> Outside of water or within 5 ft. of a large body of water, the Shade has disadvantage on attack rolls.</p>
+              <div data-id="801" class="stat-block-divider"></div>
+              <p data-id="802" class="text-sm cinzel uppercase tracking-wider text-danger text-xs font-semibold mb-2">Actions</p>
+              <p data-id="803" class="text-sm"><strong data-id="804">Drowning Touch.</strong> <em data-id="805">Melee Weapon Attack:</em> +3 to hit, reach 5 ft., one target. <em data-id="806">Hit:</em> 2d6 cold damage + target makes DC 12 Strength save or is Restrained (pulled toward water if applicable). Restrained target repeats save at start of each turn, ending effect on success.</p>
+              <div data-id="807" class="stat-block-divider"></div>
+              <p data-id="808" class="text-sm"><strong data-id="809" class="text-danger">Dreadful Insight Trigger.</strong> A creature that sees a Drowned Shade rise from deep water for the first time must make a DC 12 Wisdom save or gain the "We Are Not Alone" Dreadful Insight.</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===== PART SIX: SKILL CHALLENGES ===== -->
+      <section data-id="810" id="skill-challenges" class="pt-2">
+        <div data-id="811" class="part-banner" data-part="skill-challenges-content">
+          <div data-id="812">
+            <p data-id="813" class="text-xs text-gold/50 tracking-widest uppercase m-0 mb-1">Part Six</p>
+            <h1 data-id="814" class="text-xl md:text-2xl text-gold m-0">Skill Challenges: Complete Rules Module</h1>
+          </div>
+          <i data-id="815" data-lucide="chevron-down" class="w-5 h-5 text-gold/50 part-chevron"></i>
+        </div>
+        <div data-id="816" id="skill-challenges-content" class="part-content pt-4">
+
+          <p data-id="817" class="mb-6">A Skill Challenge is a structured scene of escalating tension where the party must achieve a set number of successes before accumulating too many failures. It is not a combat encounter — it is a dramatic scene with mechanical stakes.</p>
+
+          <h3 data-id="818" class="cinzel text-base mb-3">Components</h3>
+          <div data-id="819" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
+            <div data-id="820" class="callout-gold py-3"><strong data-id="821">Goal:</strong> What the party is trying to accomplish.</div>
+            <div data-id="822" class="callout-gold py-3"><strong data-id="823">Stakes:</strong> What changes based on success or failure.</div>
+            <div data-id="824" class="callout-gold py-3"><strong data-id="825">Progress Needed:</strong> Number of successes required (typically 6 for a party of 4).</div>
+            <div data-id="826" class="callout-gold py-3"><strong data-id="827">Failure Threshold:</strong> Number of failures that trigger failure outcome (typically 3).</div>
+            <div data-id="828" class="callout-gold py-3"><strong data-id="829">DCs:</strong> Vary by skill — common DC 12–14, specialized DC 15–18, rare knowledge DC 18–20.</div>
+            <div data-id="830" class="callout-gold py-3"><strong data-id="831">Twists:</strong> Mid-challenge complications that change the rules.</div>
+          </div>
+
+          <h3 data-id="832" class="cinzel text-base mb-3">Order of Play</h3>
+          <ol data-id="833" class="space-y-2 mb-6 pl-6">
+            <li data-id="834">DM announces the Skill Challenge and describes the stakes.</li>
+            <li data-id="835">Each player describes their character's approach and names a skill.</li>
+            <li data-id="836">DM sets the DC based on approach quality and skill appropriateness.</li>
+            <li data-id="837">Player rolls. Success adds 1 (or 2 for exceptional approaches). Failure adds 1 to the failure count.</li>
+            <li data-id="838">After each full round, DM may introduce a Twist.</li>
+            <li data-id="839">Challenge ends when successes OR failures reach their threshold.</li>
+          </ol>
+
+          <h3 data-id="840" class="cinzel text-base mb-3">Stakes Table</h3>
+          <div data-id="841" class="overflow-x-auto mb-6">
+            <table data-id="842" class="campaign-table">
+              <thead data-id="843"><tr data-id="844"><th data-id="845">Successes</th><th data-id="846">Failures</th><th data-id="847">Outcome</th></tr></thead>
+              <tbody data-id="848">
+                <tr data-id="849"><td data-id="850">6+</td><td data-id="851">0–1</td><td data-id="852">Full Success: Best possible outcome, bonus reward.</td></tr>
+                <tr data-id="853"><td data-id="854">6+</td><td data-id="855">2</td><td data-id="856">Partial Success: Goal achieved with a cost or complication.</td></tr>
+                <tr data-id="857"><td data-id="858">4–5</td><td data-id="859">2</td><td data-id="860">Mixed: Partial goal achieved, significant complication.</td></tr>
+                <tr data-id="861"><td data-id="862">3 or fewer</td><td data-id="863">3</td><td data-id="864">Failure: Goal not achieved, consequences applied.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div data-id="865" class="callout-gold">
+            <h4 data-id="866" class="cinzel text-sm mb-2"><i data-id="867" data-lucide="message-square" class="w-4 h-4 inline"></i> DM Guidance</h4>
+            <p data-id="868">"Never let a Skill Challenge feel like a series of dice rolls. Each roll should describe something happening in the scene. A failed Athletics check isn't just a minus to progress — a rope snaps, a grip slips, someone goes over the railing. The fiction drives the stakes, not the numbers."</p>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===== PART SEVEN: QUEST TRACKER ===== -->
+      <section data-id="869" id="quests" class="pt-2">
+        <div data-id="870" class="part-banner" data-part="quests-content">
+          <div data-id="871">
+            <p data-id="872" class="text-xs text-gold/50 tracking-widest uppercase m-0 mb-1">Part Seven</p>
+            <h1 data-id="873" class="text-xl md:text-2xl text-gold m-0">Quest Tracker: Act I</h1>
+          </div>
+          <i data-id="874" data-lucide="chevron-down" class="w-5 h-5 text-gold/50 part-chevron"></i>
+        </div>
+        <div data-id="875" id="quests-content" class="part-content pt-4">
+
+          <h3 data-id="876" class="cinzel text-base mb-3 text-danger flex items-center gap-2"><i data-id="877" data-lucide="target" class="w-5 h-5"></i> Main Quests</h3>
+          <div data-id="878" class="overflow-x-auto mb-6">
+            <table data-id="879" class="campaign-table">
+              <thead data-id="880"><tr data-id="881"><th data-id="882">Quest</th><th data-id="883">Status</th><th data-id="884">Source</th><th data-id="885">Reward</th></tr></thead>
+              <tbody data-id="886">
+                <tr data-id="887" class="quest-main"><td data-id="888">Protect the Resonants</td><td data-id="889">Active</td><td data-id="890">Criella</td><td data-id="891">Warden contact, information</td></tr>
+                <tr data-id="892" class="quest-main"><td data-id="893">Survive the Sea</td><td data-id="894">Active</td><td data-id="895">The Situation</td><td data-id="896">Experience, shelter</td></tr>
+                <tr data-id="897" class="quest-main"><td data-id="898">Find the Island's Secret</td><td data-id="899">Active</td><td data-id="900">The Island</td><td data-id="901">Cult intelligence</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 data-id="902" class="cinzel text-base mb-3 flex items-center gap-2" style="color:#3a6a3a;"><i data-id="903" data-lucide="compass" class="w-5 h-5"></i> Side Quests</h3>
+          <div data-id="904" class="overflow-x-auto mb-6">
+            <table data-id="905" class="campaign-table">
+              <thead data-id="906"><tr data-id="907"><th data-id="908">Quest</th><th data-id="909">Status</th><th data-id="910">Source</th><th data-id="911">Reward</th></tr></thead>
+              <tbody data-id="912">
+                <tr data-id="913" class="quest-side"><td data-id="914">Elias's Warning</td><td data-id="915">Available</td><td data-id="916">Elias Cobb</td><td data-id="917">Hidden knowledge, Passion trigger</td></tr>
+                <tr data-id="918" class="quest-side"><td data-id="919">The Cook's Secret</td><td data-id="920">Available</td><td data-id="921">Barts</td><td data-id="922">Useful item, comic relief</td></tr>
+                <tr data-id="923" class="quest-side"><td data-id="924">Recover the Journal</td><td data-id="925">Available</td><td data-id="926">Tobias</td><td data-id="927">Star charts, Insight trigger</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 data-id="928" class="cinzel text-base mb-3 flex items-center gap-2" style="color:#3a4a7a;"><i data-id="929" data-lucide="user" class="w-5 h-5"></i> Character Quests</h3>
+          <div data-id="930" class="overflow-x-auto mb-6">
+            <table data-id="931" class="campaign-table">
+              <thead data-id="932"><tr data-id="933"><th data-id="934">Quest</th><th data-id="935">Status</th><th data-id="936">Source</th><th data-id="937">Reward</th></tr></thead>
+              <tbody data-id="938">
+                <tr data-id="939" class="quest-char"><td data-id="940">Unlock Your Background</td><td data-id="941">Active</td><td data-id="942">Character Creation</td><td data-id="943">Feat ability</td></tr>
+                <tr data-id="944" class="quest-char"><td data-id="945">First Dreadful Insight</td><td data-id="946">Locked</td><td data-id="947">Mythos Encounter</td><td data-id="948">Dreadful Insight</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 data-id="949" class="cinzel text-base mb-3 flex items-center gap-2 text-gold-dark"><i data-id="950" data-lucide="map" class="w-5 h-5"></i> Exploration / Mystery Quests</h3>
+          <div data-id="951" class="overflow-x-auto">
+            <table data-id="952" class="campaign-table">
+              <thead data-id="953"><tr data-id="954"><th data-id="955">Quest</th><th data-id="956">Status</th><th data-id="957">Source</th><th data-id="958">Reward</th></tr></thead>
+              <tbody data-id="959">
+                <tr data-id="960" class="quest-explore"><td data-id="961">The Cargo Hold's Secret</td><td data-id="962">Available</td><td data-id="963">Investigation</td><td data-id="964">Cult intelligence, item</td></tr>
+                <tr data-id="965" class="quest-explore"><td data-id="966">What Criella Won't Say</td><td data-id="967">Available</td><td data-id="968">Observation</td><td data-id="969">Warden trust, information</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===== PART EIGHT: DM CHEAT SHEETS ===== -->
+      <section data-id="970" id="cheat-sheets" class="pt-2">
+        <div data-id="971" class="part-banner" data-part="cheat-sheets-content">
+          <div data-id="972">
+            <p data-id="973" class="text-xs text-gold/50 tracking-widest uppercase m-0 mb-1">Part Eight</p>
+            <h1 data-id="974" class="text-xl md:text-2xl text-gold m-0">DM Cheat Sheets</h1>
+          </div>
+          <i data-id="975" data-lucide="chevron-down" class="w-5 h-5 text-gold/50 part-chevron"></i>
+        </div>
+        <div data-id="976" id="cheat-sheets-content" class="part-content pt-4">
+
+          <h3 data-id="977" class="cinzel text-base mb-3">Session 1 Quick DC Reference</h3>
+          <div data-id="978" class="overflow-x-auto mb-6">
+            <table data-id="979" class="campaign-table">
+              <thead data-id="980"><tr data-id="981"><th data-id="982">Check</th><th data-id="983">DC</th><th data-id="984">Reveals</th></tr></thead>
+              <tbody data-id="985">
+                <tr data-id="986"><td data-id="987">Insight vs. Skeptical Passengers</td><td data-id="988">12</td><td data-id="989">Mockery feels rehearsed</td></tr>
+                <tr data-id="990"><td data-id="991">Perception vs. Quiet Figures</td><td data-id="992">14</td><td data-id="993">Watching younglings, not Elias</td></tr>
+                <tr data-id="994"><td data-id="995">Investigation — Passenger Quarters</td><td data-id="996">15</td><td data-id="997">Cult symbols in trunk</td></tr>
+                <tr data-id="998"><td data-id="999">Persuasion vs. Elias</td><td data-id="1000">15</td><td data-id="1001">One secret of your choice</td></tr>
+                <tr data-id="1002"><td data-id="1003">History — Cult Symbols</td><td data-id="1004">20</td><td data-id="1005">Cult of the Drowned God confirmed</td></tr>
+                <tr data-id="1006"><td data-id="1007">Athletics — Storm Deck</td><td data-id="1008">14</td><td data-id="1009">Progress in Skill Challenge</td></tr>
+                <tr data-id="1010"><td data-id="1011">Wisdom Save — Drowned Shade</td><td data-id="1012">12</td><td data-id="1013">"We Are Not Alone" Insight</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 data-id="1014" class="cinzel text-base mb-3">Monster Quick Reference</h3>
+          <div data-id="1015" class="overflow-x-auto mb-6">
+            <table data-id="1016" class="campaign-table">
+              <thead data-id="1017"><tr data-id="1018"><th data-id="1019">Monster</th><th data-id="1020">AC</th><th data-id="1021">HP</th><th data-id="1022">Key Attack</th><th data-id="1023">Special</th></tr></thead>
+              <tbody data-id="1024">
+                <tr data-id="1025"><td data-id="1026" class="cinzel text-sm font-semibold">Cult Fanatic</td><td data-id="1027">13</td><td data-id="1028">33</td><td data-id="1029">Dagger +4 (1d4+2)</td><td data-id="1030">Spellcasting, Dark Devotion</td></tr>
+                <tr data-id="1031"><td data-id="1032" class="cinzel text-sm font-semibold">Cult Enforcer</td><td data-id="1033">16</td><td data-id="1034">52</td><td data-id="1035">Shortsword +5 (1d6+3)</td><td data-id="1036">Brine-Soaked Blade, Shove</td></tr>
+                <tr data-id="1037"><td data-id="1038" class="cinzel text-sm font-semibold">Drowned Shade</td><td data-id="1039">11</td><td data-id="1040">26</td><td data-id="1041">Drowning Touch +3 (2d6 cold)</td><td data-id="1042">Incorporeal, Insight Trigger</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div data-id="1043" class="callout-gold">
+            <h4 data-id="1044" class="cinzel text-sm mb-2"><i data-id="1045" data-lucide="clock" class="w-4 h-4 inline"></i> Pacing Notes</h4>
+            <p data-id="1046" class="text-sm">Session 1 runs approximately 3–4 hours.</p>
+            <ul data-id="1047" class="text-sm mt-2 space-y-1 list-none pl-0">
+              <li data-id="1048"><strong data-id="1049">Scene 1 (Galley):</strong> 30–45 min</li>
+              <li data-id="1050"><strong data-id="1051">Scene 2 (Investigation Skill Challenge):</strong> 45–60 min</li>
+              <li data-id="1052"><strong data-id="1053">Scene 3 (Storm Skill Challenge):</strong> 30–45 min</li>
+              <li data-id="1054"><strong data-id="1055">Resolution/Cliffhanger:</strong> 15 min</li>
+            </ul>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===== PART NINE: PLAYER HANDOUTS ===== -->
+      <section data-id="1056" id="handouts" class="pt-2">
+        <div data-id="1057" class="part-banner" data-part="handouts-content">
+          <div data-id="1058">
+            <p data-id="1059" class="text-xs text-gold/50 tracking-widest uppercase m-0 mb-1">Part Nine</p>
+            <h1 data-id="1060" class="text-xl md:text-2xl text-gold m-0">Player Handouts</h1>
+          </div>
+          <i data-id="1061" data-lucide="chevron-down" class="w-5 h-5 text-gold/50 part-chevron"></i>
+        </div>
+        <div data-id="1062" id="handouts-content" class="part-content pt-4">
+          <p data-id="1063" class="mb-6 italic text-primary/60">Print or display these to the players at the appropriate moment.</p>
+
+          <!-- Handout 1 -->
+          <h3 data-id="1064" class="cinzel text-base mb-2 text-header">Handout 1 — The Journal</h3>
+          <p data-id="1065" class="text-sm text-primary/50 mb-2 italic">Give to players when Tobias's journal is discovered.</p>
+          <div data-id="1066" class="handout">
+            <p data-id="1067">Port Ancora, 14th of Deepwater. We left again. Criella says we will be safe on the water. I don't think the water is safe anymore. I drew the stars again last night. I don't remember drawing them but they were there in the morning. Mira says they are a map. I don't know what they are mapping.</p>
+            <p data-id="1068" class="mt-3">The men in grey came to the last inn. Criella saw them first. We left through the kitchen. I didn't finish my food.</p>
+            <p data-id="1069" class="mt-3">The spiral is the sign of where He sleeps. I know this the same way I know my name. I don't know how I know it.</p>
+          </div>
+
+          <!-- Handout 2 -->
+          <h3 data-id="1070" class="cinzel text-base mb-2 text-header mt-8">Handout 2 — Elias's Warnings</h3>
+          <p data-id="1071" class="text-sm text-primary/50 mb-2 italic">Give when Elias speaks plainly — DC 15 Persuasion success.</p>
+          <div data-id="1072" class="handout">
+            <p data-id="1073">You want to know what I know? Fine. I'll tell you one thing.</p>
+            <p data-id="1074" class="mt-3">I was on a ship in waters like these, thirty years ago. We saw something come up from below. Not a creature. Not a whale. Something that should not have a shape — but did. Just long enough for us to see it. Three men went mad. One jumped. I did not sleep properly for two years.</p>
+            <p data-id="1075" class="mt-3">The stars were the same that night as they are tonight. You understand what I'm telling you?</p>
+            <p data-id="1076" class="mt-3">Get those children off this ship. Get them away from the water. Don't let anyone in grey near them. And when the storm comes — and it will come — stay together.</p>
+            <p data-id="1077" class="mt-3">That's all I'll say.</p>
+          </div>
+
+          <!-- Handout 3 -->
+          <h3 data-id="1078" class="cinzel text-base mb-2 text-header mt-8">Handout 3 — Signal Mirror</h3>
+          <p data-id="1079" class="text-sm text-primary/50 mb-2 italic">Physical item; give to party after investigating cargo hold.</p>
+          <div data-id="1080" class="handout">
+            <p data-id="1081">A small brass mirror, palm-sized, with a series of scratches on the back. On examination (<strong data-id="1082">DC 12 Investigation</strong>): the scratches form a pattern — four long marks, two short, one diagonal. A sailor (<strong data-id="1083">DC 14 History</strong>) recognizes it as a Warden communication code: <em data-id="1084">"Extraction required. Cargo is live. Do not engage until signal."</em> The mirror has never been used. Whoever left it was never able to send the signal.</p>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===== PART TEN: DM PROMPT TEMPLATES ===== -->
+      <section data-id="1085" id="prompts" class="pt-2">
+        <div data-id="1086" class="part-banner" data-part="prompts-content">
+          <div data-id="1087">
+            <p data-id="1088" class="text-xs text-gold/50 tracking-widest uppercase m-0 mb-1">Part Ten</p>
+            <h1 data-id="1089" class="text-xl md:text-2xl text-gold m-0">DM Prompt Templates</h1>
+          </div>
+          <i data-id="1090" data-lucide="chevron-down" class="w-5 h-5 text-gold/50 part-chevron"></i>
+        </div>
+        <div data-id="1091" id="prompts-content" class="part-content pt-4">
+          <p data-id="1092" class="mb-6 italic text-primary/60">These prompts are designed to help the DM quickly generate scene descriptions, NPC dialogue, and atmospheric details using AI assistance or as improvisational springboards.</p>
+
+          <div data-id="1093" class="prompt-box mb-4">
+            <h4 data-id="1094" class="cinzel text-sm text-header mb-1">Prompt 1 — Opening Scene Atmosphere</h4>
+            <pre data-id="1095">Describe a calm night at sea aboard a merchant vessel called the Unsinkable III. The sea is mirror-flat. Stars are reflected perfectly in the water, making the horizon invisible. Players are in the ship's galley for dinner. The tone should feel peaceful but with a subtle wrongness — the kind of calm that feels watched. Avoid explicit horror. Use sensory detail: sounds, smells, the quality of light from oil lamps. About 150 words.</pre>
+          </div>
+
+          <div data-id="1096" class="prompt-box mb-4">
+            <h4 data-id="1097" class="cinzel text-sm text-header mb-1">Prompt 2 — Elias Cobb Dialogue</h4>
+            <pre data-id="1098">Write dialogue for an old sailor named Elias Cobb, age 70s, who is telling sea stories to a group of adventurers. He is wise, warm, and deliberately vague about his deeper knowledge. He knows the sea is dangerous in a Lovecraftian way — ancient things stir beneath it — but he speaks only in metaphor and implication. The topic is: [INSERT TOPIC]. Keep it to 100 words, first-person, folksy but intelligent.</pre>
+          </div>
+
+          <div data-id="1099" class="prompt-box mb-4">
+            <h4 data-id="1100" class="cinzel text-sm text-header mb-1">Prompt 3 — Storm Narration</h4>
+            <pre data-id="1101">Narrate a sudden and violent storm hitting a merchant sailing ship at night on the open sea. The storm arrives impossibly fast — in seconds, not minutes. The calm becomes chaos. Masts creak, ropes snap, sailors scream. The players are on deck. Emphasize disorientation: up and down are unreliable. The sea is trying to take them. About 100 words, present tense, second-person plural ('you see... you feel...').</pre>
+          </div>
+
+          <div data-id="1102" class="prompt-box mb-4">
+            <h4 data-id="1103" class="cinzel text-sm text-header mb-1">Prompt 4 — Cult Enforcer Confrontation</h4>
+            <pre data-id="1104">Write a short menacing speech (50-75 words) for a Cult of the Drowned God enforcer confronting the players on a rain-soaked ship deck. He is not angry — he is calm. He believes completely in what he's doing. He views the players as obstacles in a sacred mission, not as enemies. He wants the children. He would prefer not to fight. But he will.</pre>
+          </div>
+
+          <div data-id="1105" class="prompt-box mb-4">
+            <h4 data-id="1106" class="cinzel text-sm text-header mb-1">Prompt 5 — Island Discovery</h4>
+            <pre data-id="1107">Describe a volcanic island that appears out of nowhere from dense ocean fog. It should not be where it is — 300 miles from any charted land. The island is small, jungle-covered, and built over ancient stone ruins. Strange sounds emerge from the jungle. The air smells of salt and something older. The party has washed ashore in wreckage. About 150 words, atmospheric, emphasizing wrongness and age.</pre>
+          </div>
+
+          <div data-id="1108" class="prompt-box mb-4">
+            <h4 data-id="1109" class="cinzel text-sm text-header mb-1">Prompt 6 — Mira (Resonant Child) Speaking</h4>
+            <pre data-id="1110">Write a short (50-75 word) moment of dialogue from Mira, a 10-year-old half-orc girl who can partially sense the dreams of an ancient sleeping entity. She does not have the vocabulary for what she experiences. She should sound like a child — not cryptic by intention, but by limitation. She is describing what she senses from the ocean. Keep it grounded, a little heartbreaking, and quietly unsettling.</pre>
+          </div>
+
+        </div>
+      </section>
+
+    </div><!-- /max-w-4xl -->
+
+    <!-- Footer -->
+    <footer data-id="1111" id="footer-w3e5" class="bg-cover text-center py-10 px-6 mt-12 border-t border-gold/10">
+      <div data-id="1112" class="ornament text-gold/20 mb-4">~ ✦ ~</div>
+      <p data-id="1113" class="cinzel text-gold/60 text-xs tracking-widest uppercase">Cthulhu's Terror Nights — Act I &nbsp;|&nbsp; Cesar Zaldivar &nbsp;|&nbsp; For Personal Campaign Use &nbsp;|&nbsp; D&amp;D 5e 2024</p>
+      <p data-id="1114" class="text-gold/30 text-xs mt-3">Made by Copilot</p>
+    </footer>
+
+  </div><!-- /main-content -->
+
+  <!-- Scroll to top -->
+  <button data-id="1115" id="scroll-top-btn-k3m2" aria-label="Scroll to top">
+    <i data-id="1116" data-lucide="chevron-up" class="w-5 h-5"></i>
+  </button>
+
+  <script>
+    // Guard Lucide
+    if (typeof lucide !== "undefined" && typeof lucide.createIcons === "function") {
+      lucide.createIcons();
+    }
+
+    // === SIDEBAR MOBILE TOGGLE ===
+    const sidebar = document.getElementById('sidebar-v7x1');
+    const overlay = document.getElementById('sidebar-overlay-x9k4');
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn-z4f1');
+    const sidebarCloseBtn = document.getElementById('sidebar-close-btn-m1n3');
+
+    function openSidebar() {
+      sidebar.classList.add('open');
+      overlay.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', openSidebar);
+    if (sidebarCloseBtn) sidebarCloseBtn.addEventListener('click', closeSidebar);
+    if (overlay) overlay.addEventListener('click', closeSidebar);
+
+    // Close sidebar on nav link click (mobile)
+    document.querySelectorAll('.sidebar-link').forEach(function(link) {
+      link.addEventListener('click', function() {
+        if (window.innerWidth < 768) closeSidebar();
+      });
+    });
+
+    // === ACTIVE SECTION HIGHLIGHTING ===
+    const sections = [
+      'cover','preface','mythos','overview','factions','locations',
+      'passions','insights','feats','session1','npcs','monsters',
+      'skill-challenges','quests','cheat-sheets','handouts','prompts'
+    ];
+    const navLinks = document.querySelectorAll('.sidebar-link[data-nav]');
+
+    function updateActiveNav() {
+      let current = 'cover';
+      var scrollY = window.scrollY || window.pageYOffset;
+      for (var i = 0; i < sections.length; i++) {
+        var el = document.getElementById(sections[i]);
+        if (el && el.offsetTop - 120 <= scrollY) {
+          current = sections[i];
+        }
+      }
+      navLinks.forEach(function(link) {
+        if (link.dataset.nav === current) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    }
+    window.addEventListener('scroll', updateActiveNav);
+    updateActiveNav();
+
+    // === SCROLL TO TOP ===
+    var scrollTopBtn = document.getElementById('scroll-top-btn-k3m2');
+    window.addEventListener('scroll', function() {
+      var scrollY = window.scrollY || window.pageYOffset;
+      if (scrollY > 600) {
+        scrollTopBtn.style.display = 'flex';
+      } else {
+        scrollTopBtn.style.display = 'none';
+      }
+    });
+    scrollTopBtn.addEventListener('click', function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // === COLLAPSIBLE PARTS ===
+    document.querySelectorAll('.part-banner').forEach(function(banner) {
+      banner.addEventListener('click', function() {
+        var targetId = banner.dataset.part;
+        var content = document.getElementById(targetId);
+        var chevron = banner.querySelector('.part-chevron');
+        if (!content) return;
+        if (content.classList.contains('collapsed')) {
+          content.classList.remove('collapsed');
+          content.style.maxHeight = content.scrollHeight + 'px';
+          if (chevron) chevron.style.transform = 'rotate(0deg)';
+          setTimeout(function() { content.style.maxHeight = 'none'; }, 400);
+        } else {
+          content.style.maxHeight = content.scrollHeight + 'px';
+          // Force reflow
+          content.offsetHeight;
+          content.classList.add('collapsed');
+          if (chevron) chevron.style.transform = 'rotate(-90deg)';
+        }
+      });
+    });
+
+    // === PRINT ===
+    var printBtn = document.getElementById('print-btn-q8w2');
+    if (printBtn) {
+      printBtn.addEventListener('click', function() {
+        window.print();
+      });
+    }
+
+    // === DARK MODE TOGGLE ===
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+    }
+    var darkToggle = document.getElementById('dark-toggle-r5t9');
+    var darkToggleMobile = document.getElementById('dark-toggle-mobile-j2k5');
+    if (darkToggle) darkToggle.addEventListener('click', toggleDarkMode);
+    if (darkToggleMobile) darkToggleMobile.addEventListener('click', toggleDarkMode);
+
+    // === SEARCH ===
+    var searchInput = document.getElementById('search-input-p5q7');
+    var searchTimeout;
+
+    function clearHighlights() {
+      document.querySelectorAll('.search-highlight').forEach(function(el) {
+        var parent = el.parentNode;
+        parent.replaceChild(document.createTextNode(el.textContent), el);
+        parent.normalize();
+      });
+    }
+
+    function highlightText(node, term) {
+      if (!term) return 0;
+      var count = 0;
+      if (node.nodeType === 3) { // text node
+        var idx = node.textContent.toLowerCase().indexOf(term.toLowerCase());
+        if (idx >= 0) {
+          var span = document.createElement('span');
+          span.className = 'search-highlight';
+          var match = node.splitText(idx);
+          match.splitText(term.length);
+          var clone = match.cloneNode(true);
+          span.appendChild(clone);
+          match.parentNode.replaceChild(span, match);
+          count = 1;
+        }
+      } else if (node.nodeType === 1 && node.childNodes && !/(script|style)/i.test(node.tagName) && !node.classList.contains('search-highlight')) {
+        for (var i = 0; i < node.childNodes.length; i++) {
+          count += highlightText(node.childNodes[i], term);
+        }
+      }
+      return count;
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(function() {
+          clearHighlights();
+          var term = searchInput.value.trim();
+          if (term.length < 2) return;
+          var mainContent = document.getElementById('main-content-a2b3');
+          var count = highlightText(mainContent, term);
+          if (count > 0) {
+            var first = mainContent.querySelector('.search-highlight');
+            if (first) {
+              first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }
+        }, 350);
+      });
+    }
+  </script>
+</body>
+</html>
