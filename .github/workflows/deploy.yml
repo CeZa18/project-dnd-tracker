@@ -24,7 +24,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: ceza18-dnd
+          projectName: project-dnd-tracker
           directory: public
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           branch: main
